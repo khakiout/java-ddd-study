@@ -20,7 +20,7 @@ public class UserController {
         this.userApplication = userApplication;
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public List<UserDTO> getAll() {
         return userApplication.getAll();
     }

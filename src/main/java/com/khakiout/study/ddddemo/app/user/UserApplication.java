@@ -1,25 +1,41 @@
 package com.khakiout.study.ddddemo.app.user;
 
 import com.khakiout.study.ddddemo.app.BaseApplication;
-import com.khakiout.study.ddddemo.infrastructure.Repository;
+import com.khakiout.study.ddddemo.domain.entity.User;
+import com.khakiout.study.ddddemo.infrastructure.UserRepository;
+import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class UserApplication implements BaseApplication<UserDTO> {
 
-    @Autowired
-    private final Repository userRepository;
+    Logger logger = LoggerFactory.getLogger(UserApplication.class);
 
-    public UserApplication(Repository userRepository) {
+    @Autowired
+    private final UserRepository userRepository;
+
+    public UserApplication(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @Override
     public List<UserDTO> getAll() {
-        return null;
+        List<User> users = userRepository.getAll();
+        List<UserDTO> userDTOs = new ArrayList<>();
+        users.forEach(user -> {
+            UserDTO dto = new UserDTO();
+            dto.setId(user.getId());
+            dto.setFirstName(user.getFirstName());
+            dto.setLastName(user.getLastName());
+
+            userDTOs.add(dto);
+        });
+
+        return userDTOs;
     }
 
     @Override

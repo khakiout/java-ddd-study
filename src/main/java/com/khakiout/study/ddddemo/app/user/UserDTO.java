@@ -5,10 +5,53 @@ import java.time.LocalDateTime;
 
 public class UserDTO extends BaseDTO {
 
-    String id;
-    String firstName;
-    String lastName;
-    LocalDateTime birthday;
-    int age;
+    private Long id;
+    private String firstName;
+    private String lastName;
+    private LocalDateTime birthday;
+    private int age;
 
+    public UserDTO() {
+
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public LocalDateTime getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(LocalDateTime birthday) {
+        this.birthday = birthday;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
 }

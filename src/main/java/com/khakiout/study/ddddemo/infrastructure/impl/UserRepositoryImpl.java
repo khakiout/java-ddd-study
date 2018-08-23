@@ -33,7 +33,8 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User findById(String id) {
-        return null;
+        Long idValue = Long.valueOf(id);
+        return repository.findById(idValue).orElse(null);
     }
 
     @Override

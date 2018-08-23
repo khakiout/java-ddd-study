@@ -27,10 +27,7 @@ public class UserApplication implements BaseApplication<UserDTO> {
         List<User> users = userRepository.getAll();
         List<UserDTO> userDTOs = new ArrayList<>();
         users.forEach(user -> {
-            UserDTO dto = new UserDTO();
-            dto.setId(user.getId());
-            dto.setFirstName(user.getFirstName());
-            dto.setLastName(user.getLastName());
+            UserDTO dto = this.mapDTO(user);
 
             userDTOs.add(dto);
         });
@@ -40,7 +37,10 @@ public class UserApplication implements BaseApplication<UserDTO> {
 
     @Override
     public UserDTO findById(String id) {
-        return null;
+        User user = userRepository.findById(id);
+        UserDTO dto = this.mapDTO(user);
+
+        return dto;
     }
 
     @Override
@@ -56,5 +56,18 @@ public class UserApplication implements BaseApplication<UserDTO> {
     @Override
     public void delete(String id) {
 
+    }
+
+    // TODO: move to a mapper class
+    private UserDTO mapDTO(User user) {
+        UserDTO dto = new UserDTO();
+
+        if (user != null) {
+            dto.setId(user.getId());
+            dto.setFirstName(user.getFirstName());
+            dto.setLastName(user.getLastName());
+        }
+
+        return dto;
     }
 }

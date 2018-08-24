@@ -1,8 +1,8 @@
 package com.khakiout.study.ddddemo.app.user;
 
 import com.khakiout.study.ddddemo.app.BaseApplication;
-import com.khakiout.study.ddddemo.domain.entity.User;
-import com.khakiout.study.ddddemo.infrastructure.UserRepository;
+import com.khakiout.study.ddddemo.domain.entity.UserEntity;
+import com.khakiout.study.ddddemo.infrastructure.repositories.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -24,7 +24,7 @@ public class UserApplication implements BaseApplication<UserDTO> {
 
     @Override
     public List<UserDTO> getAll() {
-        List<User> users = userRepository.getAll();
+        List<UserEntity> users = userRepository.getAll();
         List<UserDTO> userDTOs = new ArrayList<>();
         users.forEach(user -> {
             UserDTO dto = this.mapDTO(user);
@@ -37,7 +37,7 @@ public class UserApplication implements BaseApplication<UserDTO> {
 
     @Override
     public UserDTO findById(String id) {
-        User user = userRepository.findById(id);
+        UserEntity user = userRepository.findById(id);
         UserDTO dto = this.mapDTO(user);
 
         return dto;
@@ -59,14 +59,18 @@ public class UserApplication implements BaseApplication<UserDTO> {
     }
 
     // TODO: move to a mapper class
-    private UserDTO mapDTO(User user) {
+    private UserDTO mapDTO(UserEntity user) {
         UserDTO dto = new UserDTO();
 
         if (user != null) {
             dto.setId(user.getId());
             dto.setFirstName(user.getFirstName());
             dto.setLastName(user.getLastName());
-            dto.setEmail(user.getEmail());
+            String email = null;
+            if (user.getEmail() != null) {
+                email = user.getEmail().getEmail();
+            }
+            dto.setEmail(email);
         }
 
         return dto;

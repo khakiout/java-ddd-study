@@ -1,4 +1,4 @@
-package com.khakiout.study.ddddemo.domain.valueobject;
+package com.khakiout.study.ddddemo.infrastructure.models;
 
 import javax.persistence.Embeddable;
 

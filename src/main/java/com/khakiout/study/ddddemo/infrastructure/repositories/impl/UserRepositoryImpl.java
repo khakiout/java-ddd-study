@@ -1,7 +1,7 @@
-package com.khakiout.study.ddddemo.infrastructure.impl;
+package com.khakiout.study.ddddemo.infrastructure.repositories.impl;
 
 import com.khakiout.study.ddddemo.domain.entity.User;
-import com.khakiout.study.ddddemo.infrastructure.UserRepository;
+import com.khakiout.study.ddddemo.infrastructure.repositories.UserRepository;
 import com.khakiout.study.ddddemo.infrastructure.spring.SpringUserRepository;
 import java.util.ArrayList;
 import java.util.List;

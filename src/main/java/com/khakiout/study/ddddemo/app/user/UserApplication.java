@@ -2,7 +2,7 @@ package com.khakiout.study.ddddemo.app.user;
 
 import com.khakiout.study.ddddemo.app.BaseApplication;
 import com.khakiout.study.ddddemo.domain.entity.User;
-import com.khakiout.study.ddddemo.infrastructure.UserRepository;
+import com.khakiout.study.ddddemo.infrastructure.repositories.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;

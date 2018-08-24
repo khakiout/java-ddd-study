@@ -1,4 +1,4 @@
-package com.khakiout.study.ddddemo.infrastructure;
+package com.khakiout.study.ddddemo.infrastructure.repositories;
 
 import com.khakiout.study.ddddemo.domain.entity.User;
 

@@ -1,7 +1,6 @@
 package com.khakiout.study.ddddemo;
 
 import com.khakiout.study.ddddemo.domain.entity.UserEntity;
-import com.khakiout.study.ddddemo.domain.valueobject.EmailValueObject;
 import com.khakiout.study.ddddemo.infrastructure.repositories.UserRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -23,10 +22,9 @@ public class DddDemoApplication {
 	}
 
 	private static void createUser(String name, String email) {
-		UserEntity user = new UserEntity();
-		user.setFirstName(name.split(" ")[0]);
-		user.setLastName(name.split(" ")[1]);
-		user.setEmail(new EmailValueObject(email));
+		String firstName = name.split(" ")[0];
+		String lastName = name.split(" ")[1];
+		UserEntity user = new UserEntity(null, firstName, lastName, email, null, null);
 		userRepository.create(user);
 	}
 }

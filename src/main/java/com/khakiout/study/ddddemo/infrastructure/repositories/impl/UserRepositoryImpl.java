@@ -42,8 +42,12 @@ public class UserRepositoryImpl implements UserRepository {
     public UserEntity findById(String id) {
         Long idValue = Long.valueOf(id);
 
+        UserEntity userEntity = null;
         User user = repository.findById(idValue).orElse(null);
-        return transform(user);
+        if (user != null) {
+            userEntity = transform(user);
+        }
+        return userEntity;
     }
 
     @Override
@@ -76,7 +80,12 @@ public class UserRepositoryImpl implements UserRepository {
         user.setId(entity.getId());
         user.setFirstName(entity.getFirstName());
         user.setLastName(entity.getLastName());
-        user.setEmail(new Email(entity.getEmail()));
+        EmailValueObject entityEmail = entity.getEmail();
+        Email email = null;
+        if (entityEmail != null) {
+            email = new Email(entityEmail.getEmail());
+        }
+        user.setEmail(email);
 
         return user;
     }
@@ -88,11 +97,8 @@ public class UserRepositoryImpl implements UserRepository {
      * @return the user
      */
     private UserEntity transform(User user) {
-        UserEntity userEntity = new UserEntity();
-        userEntity.setId(user.getId());
-        userEntity.setFirstName(user.getFirstName());
-        userEntity.setLastName(user.getLastName());
-        userEntity.setEmail(new EmailValueObject(user.getEmail()));
+        UserEntity userEntity = new UserEntity(user.getId(), user.getFirstName(), user.getLastName(),
+            user.getEmail(), null, null);
 
         return userEntity;
     }

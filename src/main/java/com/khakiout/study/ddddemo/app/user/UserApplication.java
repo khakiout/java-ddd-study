@@ -60,15 +60,17 @@ public class UserApplication implements BaseApplication<UserDTO> {
 
     // TODO: move to a mapper class
     private UserDTO mapDTO(UserEntity user) {
-        UserDTO dto = null;
+        UserDTO dto = new UserDTO();
 
         if (user != null) {
-            dto = new UserDTO();
-
             dto.setId(user.getId());
             dto.setFirstName(user.getFirstName());
             dto.setLastName(user.getLastName());
-            dto.setEmail(user.getEmail());
+            String email = null;
+            if (user.getEmail() != null) {
+                email = user.getEmail().getEmail();
+            }
+            dto.setEmail(email);
         }
 
         return dto;

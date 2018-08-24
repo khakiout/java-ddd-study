@@ -1,8 +1,11 @@
 package com.khakiout.study.ddddemo.infrastructure.repositories.impl;
 
-import com.khakiout.study.ddddemo.domain.entity.User;
+import com.khakiout.study.ddddemo.domain.entity.UserEntity;
+import com.khakiout.study.ddddemo.domain.valueobject.EmailValueObject;
+import com.khakiout.study.ddddemo.infrastructure.models.Email;
 import com.khakiout.study.ddddemo.infrastructure.repositories.UserRepository;
 import com.khakiout.study.ddddemo.infrastructure.spring.SpringUserRepository;
+import com.khakiout.study.ddddemo.infrastructure.models.User;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -23,34 +26,74 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> getAll() {
+    public List<UserEntity> getAll() {
         Iterable<User> userIterable = repository.findAll();
-        List<User> users = new ArrayList<>();
-        userIterable.forEach(users::add);
+        List<UserEntity> users = new ArrayList<>();
+        userIterable.forEach(user -> {
+            UserEntity entity = transform(user);
+            users.add(entity);
+        });
         logger.info("Found [{}] users", users.size());
+
         return users;
     }
 
     @Override
-    public User findById(String id) {
+    public UserEntity findById(String id) {
         Long idValue = Long.valueOf(id);
-        return repository.findById(idValue).orElse(null);
+
+        User user = repository.findById(idValue).orElse(null);
+        return transform(user);
     }
 
     @Override
-    public void create(User user) {
+    public void create(UserEntity userEntity) {
         logger.info("Creating user");
+        User user = this.transform(userEntity);
         repository.save(user);
         logger.info("User creation success");
     }
 
     @Override
-    public void update(String id, User user) {
+    public void update(String id, UserEntity user) {
 
     }
 
     @Override
     public void delete(String id) {
 
+    }
+
+    // TODO: move this to transformer class
+    /**
+     * Transform entity.
+     *
+     * @param entity
+     * @return the user
+     */
+    private User transform(UserEntity entity) {
+        User user = new User();
+        user.setId(entity.getId());
+        user.setFirstName(entity.getFirstName());
+        user.setLastName(entity.getLastName());
+        user.setEmail(new Email(entity.getEmail()));
+
+        return user;
+    }
+
+    /**
+     * Transform entity.
+     *
+     * @param user
+     * @return the user
+     */
+    private UserEntity transform(User user) {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(user.getId());
+        userEntity.setFirstName(user.getFirstName());
+        userEntity.setLastName(user.getLastName());
+        userEntity.setEmail(new EmailValueObject(user.getEmail()));
+
+        return userEntity;
     }
 }

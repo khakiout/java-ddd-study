@@ -1,7 +1,7 @@
 package com.khakiout.study.ddddemo.app.user;
 
 import com.khakiout.study.ddddemo.app.BaseApplication;
-import com.khakiout.study.ddddemo.domain.entity.User;
+import com.khakiout.study.ddddemo.domain.entity.UserEntity;
 import com.khakiout.study.ddddemo.infrastructure.repositories.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ public class UserApplication implements BaseApplication<UserDTO> {
 
     @Override
     public List<UserDTO> getAll() {
-        List<User> users = userRepository.getAll();
+        List<UserEntity> users = userRepository.getAll();
         List<UserDTO> userDTOs = new ArrayList<>();
         users.forEach(user -> {
             UserDTO dto = this.mapDTO(user);
@@ -37,7 +37,7 @@ public class UserApplication implements BaseApplication<UserDTO> {
 
     @Override
     public UserDTO findById(String id) {
-        User user = userRepository.findById(id);
+        UserEntity user = userRepository.findById(id);
         UserDTO dto = this.mapDTO(user);
 
         return dto;
@@ -59,10 +59,12 @@ public class UserApplication implements BaseApplication<UserDTO> {
     }
 
     // TODO: move to a mapper class
-    private UserDTO mapDTO(User user) {
-        UserDTO dto = new UserDTO();
+    private UserDTO mapDTO(UserEntity user) {
+        UserDTO dto = null;
 
         if (user != null) {
+            dto = new UserDTO();
+
             dto.setId(user.getId());
             dto.setFirstName(user.getFirstName());
             dto.setLastName(user.getLastName());

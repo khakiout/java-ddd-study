@@ -8,6 +8,7 @@ public class UserDTO extends BaseDTO {
     private Long id;
     private String firstName;
     private String lastName;
+    private String email;
     private LocalDateTime birthday;
     private int age;
 
@@ -37,6 +38,14 @@ public class UserDTO extends BaseDTO {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public LocalDateTime getBirthday() {

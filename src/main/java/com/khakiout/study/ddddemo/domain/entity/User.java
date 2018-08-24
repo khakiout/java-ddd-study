@@ -1,8 +1,10 @@
 package com.khakiout.study.ddddemo.domain.entity;
 
 import com.khakiout.study.ddddemo.domain.BaseModel;
+import com.khakiout.study.ddddemo.domain.valueobject.Email;
 import java.util.Date;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -12,8 +14,14 @@ public class User extends BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @NotNull
     private String firstName;
+    @NotNull
     private String lastName;
+
+//    @NotNull
+    @Embedded
+    private Email email;
 
 //    @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -51,6 +59,14 @@ public class User extends BaseModel {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email.getEmail();
+    }
+
+    public void setEmail(Email email) {
+        this.email = email;
     }
 
     public Date getCreatedAt() {

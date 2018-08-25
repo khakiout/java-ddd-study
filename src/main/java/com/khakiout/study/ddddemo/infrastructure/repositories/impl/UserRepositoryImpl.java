@@ -59,8 +59,15 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void update(String id, UserEntity user) {
-
+    public void update(String id, UserEntity userEntity) {
+        logger.info("Modifying user [{}]", id);
+        User user = this.transform(userEntity);
+        if (this.findById(id) != null) {
+            repository.save(user);
+            logger.info("User modification success");
+        } else {
+            logger.warn("Failed to update missing user");
+        }
     }
 
     @Override

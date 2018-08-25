@@ -60,7 +60,10 @@ public class User {
     }
 
     public String getEmail() {
-        return email.getEmail();
+        if (email != null) {
+            return email.getEmail();
+        }
+        return null;
     }
 
     public void setEmail(Email email) {

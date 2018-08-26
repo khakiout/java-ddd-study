@@ -2,7 +2,6 @@ package com.khakiout.study.ddddemo.infrastructure.repositories.impl;
 
 import com.khakiout.study.ddddemo.domain.entity.UserEntity;
 import com.khakiout.study.ddddemo.domain.valueobject.EmailValueObject;
-import com.khakiout.study.ddddemo.infrastructure.models.Email;
 import com.khakiout.study.ddddemo.infrastructure.repositories.UserRepository;
 import com.khakiout.study.ddddemo.infrastructure.spring.SpringUserRepository;
 import com.khakiout.study.ddddemo.infrastructure.models.User;
@@ -88,11 +87,10 @@ public class UserRepositoryImpl implements UserRepository {
         user.setFirstName(entity.getFirstName());
         user.setLastName(entity.getLastName());
         EmailValueObject entityEmail = entity.getEmail();
-        Email email = null;
+        // TODO: remove null check
         if (entityEmail != null) {
-            email = new Email(entityEmail.getEmail());
+            user.setEmail(entityEmail.getEmail());
         }
-        user.setEmail(email);
 
         return user;
     }

@@ -19,8 +19,8 @@ public class UserEntity extends BaseModel {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = new EmailValueObject(email);
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.createdAt = (createdAt != null) ? createdAt : new Date();
+        this.updatedAt = (updatedAt != null) ? updatedAt : new Date();
     }
 
     public Long getId() {

@@ -22,12 +22,12 @@ public class User {
     @Email
     private String email;
 
-    //    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
     private Date createdAt;
 
-    //    @Column(nullable = false)
+    @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @LastModifiedDate
     private Date updatedAt;

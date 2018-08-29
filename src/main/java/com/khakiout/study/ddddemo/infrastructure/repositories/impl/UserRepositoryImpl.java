@@ -91,6 +91,8 @@ public class UserRepositoryImpl implements UserRepository {
         if (entityEmail != null) {
             user.setEmail(entityEmail.getEmail());
         }
+        user.setCreatedAt(entity.getCreatedAt());
+        user.setUpdatedAt(entity.getUpdatedAt());
 
         return user;
     }
@@ -103,7 +105,7 @@ public class UserRepositoryImpl implements UserRepository {
      */
     private UserEntity transform(User user) {
         UserEntity userEntity = new UserEntity(user.getId(), user.getFirstName(), user.getLastName(),
-            user.getEmail(), null, null);
+            user.getEmail(), user.getCreatedAt(), user.getUpdatedAt());
 
         return userEntity;
     }

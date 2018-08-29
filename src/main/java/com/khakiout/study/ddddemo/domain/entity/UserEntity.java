@@ -1,12 +1,10 @@
 package com.khakiout.study.ddddemo.domain.entity;
 
-import com.khakiout.study.ddddemo.domain.BaseModel;
 import com.khakiout.study.ddddemo.domain.valueobject.EmailValueObject;
 import java.util.Date;
 
-public class UserEntity extends BaseModel {
+public class UserEntity extends BaseEntity<Long> {
 
-    private final Long id;
     private final String firstName;
     private final String lastName;
     private final EmailValueObject email;
@@ -15,7 +13,7 @@ public class UserEntity extends BaseModel {
 
     public UserEntity(Long id, String firstName, String lastName,
         String email, Date createdAt, Date updatedAt) {
-        this.id = id;
+        super(id);
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = new EmailValueObject(email);

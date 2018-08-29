@@ -45,7 +45,8 @@ public class UserApplication implements BaseApplication<UserDTO> {
 
     @Override
     public void create(UserDTO userDTO) {
-
+        UserEntity user = this.mapEntity(userDTO);
+        userRepository.create(user);
     }
 
     @Override
@@ -74,5 +75,13 @@ public class UserApplication implements BaseApplication<UserDTO> {
         }
 
         return dto;
+    }
+
+    // TODO: move to a mapper class
+    private UserEntity mapEntity(UserDTO userDTO) {
+        UserEntity userEntity = new UserEntity(null, userDTO.getFirstName(), userDTO.getLastName(),
+            userDTO.getEmail(), null, null);
+
+        return userEntity;
     }
 }

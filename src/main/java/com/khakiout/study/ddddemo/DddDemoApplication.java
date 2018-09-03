@@ -16,9 +16,9 @@ public class DddDemoApplication {
 
 		userRepository = application.getBean(UserRepository.class);
 
-		createUser("Larry Guevarra", "lguevarra@gmail.com");
-		createUser("Marc Santos", "msantos@gmail.com");
-		createUser("Truth March", "tmarch@gmail.com");
+//		createUser("Larry Guevarra", "lguevarra@gmail.com");
+//		createUser("Marc Santos", "msantos@gmail.com");
+//		createUser("Truth March", "tmarch@gmail.com");
 	}
 
 	private static void createUser(String name, String email) {

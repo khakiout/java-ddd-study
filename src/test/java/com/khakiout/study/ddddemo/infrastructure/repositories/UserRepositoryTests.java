@@ -6,7 +6,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.TransactionSystemException;
+
+import javax.validation.ConstraintViolationException;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -20,12 +21,12 @@ public class UserRepositoryTests {
         createUser("Larry Guevarra", "lguevarra@gmail.com");
     }
 
-    @Test(expected = TransactionSystemException.class)
+    @Test(expected = ConstraintViolationException.class)
     public void testUserCreationWithNullEmailMustError() {
         createUser("Larry Guevarra", null);
     }
 
-    @Test(expected = TransactionSystemException.class)
+    @Test(expected = ConstraintViolationException.class)
     public void testUserCreationWithInvalidEmailMustError() {
         createUser("Larry Guevarra", "test");
     }

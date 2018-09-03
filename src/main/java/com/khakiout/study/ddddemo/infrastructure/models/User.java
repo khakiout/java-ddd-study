@@ -2,6 +2,7 @@ package com.khakiout.study.ddddemo.infrastructure.models;
 
 import java.util.Date;
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -17,9 +18,9 @@ public class User {
     @NotNull
     private String lastName;
 
-    //    @NotNull
-    @Embedded
-    private Email email;
+    @NotNull
+    @Email
+    private String email;
 
     //    @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -60,10 +61,10 @@ public class User {
     }
 
     public String getEmail() {
-        return email.getEmail();
+        return email;
     }
 
-    public void setEmail(Email email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 

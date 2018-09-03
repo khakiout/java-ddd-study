@@ -35,10 +35,11 @@ public interface BaseController<T extends BaseDTO> {
     /**
      * Modify an entity.
      *
+     * @param id the id
      * @param t the entity to be updated.
      * @return the http response.
      */
-    ResponseEntity update(T t);
+    ResponseEntity update(String id, T t);
 
     /**
      * Delete the entity.

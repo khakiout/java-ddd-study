@@ -1,4 +1,4 @@
-package com.khakiout.study.ddddemo.domain.validator;
+package com.khakiout.study.ddddemo.domain.validation.validator;
 
 import com.baidu.unbiz.fluentvalidator.ValidationError;
 import com.baidu.unbiz.fluentvalidator.Validator;

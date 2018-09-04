@@ -2,13 +2,14 @@ package com.khakiout.study.ddddemo.domain.exception;
 
 import com.baidu.unbiz.fluentvalidator.ComplexResult;
 import com.baidu.unbiz.fluentvalidator.ValidationError;
-import com.khakiout.study.ddddemo.domain.validator.ValidationErrorObject;
+import com.khakiout.study.ddddemo.domain.validation.response.ValidationErrorItem;
 
+import com.khakiout.study.ddddemo.domain.validation.response.ValidationReport;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Throw when a validation error happens inside an entity.
+ * Thrown when a validation error happens inside an entity.
  */
 public class EntityValidationException extends Exception {
 
@@ -39,16 +40,16 @@ public class EntityValidationException extends Exception {
         return "Entity has validation errors.";
     }
 
-    public List<ValidationErrorObject> getErrorMessages() {
+    public ValidationReport getErrorMessages() {
         List<ValidationError> errors = this.validationResult.getErrors();
-        List<ValidationErrorObject> errorMessages = new ArrayList<>();
+        ValidationReport validationReport = new ValidationReport();
 
         for (ValidationError error : errors) {
-            ValidationErrorObject errorMessage = ValidationErrorObject.create(error.getErrorMsg())
+            ValidationErrorItem errorMessage = ValidationErrorItem.create(error.getErrorMsg())
                 .setPath(error.getField());
-            errorMessages.add(errorMessage);
+            validationReport.addError(errorMessage);
         }
 
-        return errorMessages;
+        return validationReport;
     }
 }

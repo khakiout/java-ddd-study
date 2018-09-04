@@ -1,15 +1,10 @@
 package com.khakiout.study.ddddemo.domain.entity;
 
-import static com.baidu.unbiz.fluentvalidator.ResultCollectors.toComplex;
-import static com.baidu.unbiz.fluentvalidator.ResultCollectors.toSimple;
-
 import com.baidu.unbiz.fluentvalidator.ComplexResult;
-import com.baidu.unbiz.fluentvalidator.FluentValidator;
 import com.baidu.unbiz.fluentvalidator.annotation.FluentValidate;
-import com.baidu.unbiz.fluentvalidator.registry.impl.SimpleRegistry;
 import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
-import com.khakiout.study.ddddemo.domain.validator.EmailValidator;
-import com.khakiout.study.ddddemo.domain.validator.NameValidator;
+import com.khakiout.study.ddddemo.domain.validation.validator.EmailValidator;
+import com.khakiout.study.ddddemo.domain.validation.validator.NameValidator;
 import com.khakiout.study.ddddemo.domain.valueobject.EmailValueObject;
 
 import java.util.Date;
@@ -72,14 +67,4 @@ public class UserEntity extends BaseEntity<Long> {
         return updatedAt;
     }
 
-    private ComplexResult validate() {
-        ComplexResult result = FluentValidator.checkAll()
-            .failOver()
-            .configure(new SimpleRegistry())
-            .on(this)
-            .doValidate()
-            .result(toComplex());
-
-        return result;
-    }
 }

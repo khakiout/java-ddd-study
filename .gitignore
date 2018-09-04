@@ -48,3 +48,6 @@ hs_err_pid*
 /dist/
 /nbdist/
 /.nb-gradle/
+
+# Others
+.DS_Store

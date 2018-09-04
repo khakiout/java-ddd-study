@@ -2,6 +2,7 @@ package com.khakiout.study.ddddemo.app.user;
 
 import com.khakiout.study.ddddemo.app.BaseApplication;
 import com.khakiout.study.ddddemo.domain.entity.UserEntity;
+import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
 import com.khakiout.study.ddddemo.infrastructure.repositories.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,7 @@ public class UserApplication implements BaseApplication<UserDTO> {
     }
 
     @Override
-    public void create(UserDTO userDTO) {
+    public void create(UserDTO userDTO) throws EntityValidationException {
         UserEntity user = this.mapEntity(userDTO);
         userRepository.create(user);
     }
@@ -81,7 +82,7 @@ public class UserApplication implements BaseApplication<UserDTO> {
     }
 
     // TODO: move to a mapper class
-    private UserEntity mapEntity(UserDTO userDTO) {
+    private UserEntity mapEntity(UserDTO userDTO) throws EntityValidationException {
         UserEntity userEntity = new UserEntity(null, userDTO.getFirstName(), userDTO.getLastName(),
             userDTO.getEmail(), null, null);
 

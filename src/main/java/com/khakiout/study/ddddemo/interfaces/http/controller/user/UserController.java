@@ -2,8 +2,11 @@ package com.khakiout.study.ddddemo.interfaces.http.controller.user;
 
 import com.khakiout.study.ddddemo.app.user.UserApplication;
 import com.khakiout.study.ddddemo.app.user.UserDTO;
+import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
 import com.khakiout.study.ddddemo.interfaces.http.controller.BaseController;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("users")
 public class UserController implements BaseController<UserDTO> {
+
+    Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     private final UserApplication userApplication;
@@ -43,9 +48,14 @@ public class UserController implements BaseController<UserDTO> {
     @Override
     @PostMapping("")
     public ResponseEntity create(@RequestBody UserDTO userDTO) {
-        userApplication.create(userDTO);
+        try {
+            userApplication.create(userDTO);
+            return ResponseEntity.ok(null);
+        } catch (EntityValidationException eve) {
+            logger.warn("Validation exception");
+            return ResponseEntity.badRequest().body(eve.getErrorMessages());
+        }
 
-        return ResponseEntity.ok(null);
     }
 
     @Override
@@ -60,7 +70,7 @@ public class UserController implements BaseController<UserDTO> {
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable String id) {
         userApplication.delete(id);
-        
+
         return ResponseEntity.ok(null);
     }
 

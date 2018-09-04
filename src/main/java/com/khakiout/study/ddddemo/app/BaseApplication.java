@@ -4,6 +4,7 @@ package com.khakiout.study.ddddemo.app;
  * Base Application
  */
 
+import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
 import java.util.List;
 
 public interface BaseApplication<T extends BaseDTO> {
@@ -12,7 +13,7 @@ public interface BaseApplication<T extends BaseDTO> {
 
     T findById(String id);
 
-    void create(T t);
+    void create(T t) throws EntityValidationException;
 
     void update(String id, T t);
 

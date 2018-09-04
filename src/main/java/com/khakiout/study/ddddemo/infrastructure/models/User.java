@@ -13,7 +13,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator="native")
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
     private Long id;
     @NotNull

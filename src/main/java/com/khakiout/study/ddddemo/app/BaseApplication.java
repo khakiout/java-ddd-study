@@ -5,6 +5,7 @@ package com.khakiout.study.ddddemo.app;
  */
 
 import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
+
 import java.util.List;
 
 public interface BaseApplication<T extends BaseDTO> {

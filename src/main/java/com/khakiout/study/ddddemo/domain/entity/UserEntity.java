@@ -11,17 +11,18 @@ import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
 import com.khakiout.study.ddddemo.domain.validator.EmailValidator;
 import com.khakiout.study.ddddemo.domain.validator.NameValidator;
 import com.khakiout.study.ddddemo.domain.valueobject.EmailValueObject;
+
 import java.util.Date;
 
 public class UserEntity extends BaseEntity<Long> {
 
-    @FluentValidate({ NameValidator.class })
+    @FluentValidate({NameValidator.class})
     private final String firstName;
 
-    @FluentValidate({ NameValidator.class })
+    @FluentValidate({NameValidator.class})
     private final String lastName;
 
-    @FluentValidate({ EmailValidator.class })
+    @FluentValidate({EmailValidator.class})
     private final EmailValueObject email;
 
     private final Date createdAt;

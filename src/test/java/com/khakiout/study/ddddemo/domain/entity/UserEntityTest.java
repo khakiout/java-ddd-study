@@ -78,6 +78,7 @@ public class UserEntityTest {
         System.out.println(eve.getErrorMessages());
         assertEquals("Name must have a value.", eve.getErrorMessages().get(0).getMessage());
         assertEquals("Name must have a value.", eve.getErrorMessages().get(1).getMessage());
-        assertEquals("Email must be a valid email address.", eve.getErrorMessages().get(2).getMessage());
+        assertEquals("Email must be a valid email address.",
+            eve.getErrorMessages().get(2).getMessage());
     }
 }

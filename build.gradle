@@ -1,13 +1,13 @@
 buildscript {
-	ext {
-		springBootVersion = '2.0.4.RELEASE'
-	}
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-	}
+    ext {
+        springBootVersion = '2.0.4.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
 }
 
 apply plugin: 'java'
@@ -20,23 +20,23 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 
 dependencies {
 //	compile('org.springframework.boot:spring-boot-starter-webflux')
-	compile('org.springframework.boot:spring-boot-starter-web')
-	compile("org.springframework.boot:spring-boot-starter-data-jpa")
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile("org.springframework.boot:spring-boot-starter-data-jpa")
     compile('ch.qos.logback.contrib:logback-json-classic:0.1.5')
     compile('ch.qos.logback.contrib:logback-jackson:0.1.5')
     compile('com.fasterxml.jackson.core:jackson-databind')
-	compile('commons-httpclient:commons-httpclient:3.1')
-	compile('com.baidu.unbiz:fluent-validator:1.0.9')
-	compile('commons-validator:commons-validator:1.4.0')
-	compile('org.liquibase:liquibase-core')
-	compile('com.h2database:h2')
+    compile('commons-httpclient:commons-httpclient:3.1')
+    compile('com.baidu.unbiz:fluent-validator:1.0.9')
+    compile('commons-validator:commons-validator:1.4.0')
+    compile('org.liquibase:liquibase-core')
+    compile('com.h2database:h2')
 
-	testCompile('org.springframework.boot:spring-boot-starter-test')
-	testCompile('io.projectreactor:reactor-test')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile('io.projectreactor:reactor-test')
 }

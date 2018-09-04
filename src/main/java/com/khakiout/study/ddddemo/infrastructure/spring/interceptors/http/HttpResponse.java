@@ -2,6 +2,7 @@ package com.khakiout.study.ddddemo.infrastructure.spring.interceptors.http;
 
 
 public class HttpResponse {
+
     private long startTime;
     private long endTime;
     private String duration;
@@ -59,9 +60,9 @@ public class HttpResponse {
     @Override
     public String toString() {
         return "{ " +
-                " duration = '" + duration + '\'' +
-                ", statusCode = " + statusCode +
-                ", statusMessage = '" + statusMessage + '\'' +
-                " }";
+            " duration = '" + duration + '\'' +
+            ", statusCode = " + statusCode +
+            ", statusMessage = '" + statusMessage + '\'' +
+            " }";
     }
 }

@@ -3,6 +3,7 @@ package com.khakiout.study.ddddemo.infrastructure.spring.interceptors.http;
 import javax.servlet.http.HttpServletRequest;
 
 public class HttpRequest {
+
     private String host;
     private String userAgent;
     private String accept;
@@ -112,14 +113,14 @@ public class HttpRequest {
     @Override
     public String toString() {
         return "{ " +
-                " host = '" + host + '\'' +
-                ", userAgent = '" + userAgent + '\'' +
-                ", accept = '" + accept + '\'' +
-                ", acceptLanguage = '" + acceptLanguage + '\'' +
-                ", acceptEncoding = '" + acceptEncoding + '\'' +
-                ", connection = '" + connection + '\'' +
-                ", requestURI = '" + requestURI + '\'' +
-                ", method = '" + method + '\'' +
-                " }";
+            " host = '" + host + '\'' +
+            ", userAgent = '" + userAgent + '\'' +
+            ", accept = '" + accept + '\'' +
+            ", acceptLanguage = '" + acceptLanguage + '\'' +
+            ", acceptEncoding = '" + acceptEncoding + '\'' +
+            ", connection = '" + connection + '\'' +
+            ", requestURI = '" + requestURI + '\'' +
+            ", method = '" + method + '\'' +
+            " }";
     }
 }

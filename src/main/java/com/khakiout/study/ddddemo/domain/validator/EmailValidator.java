@@ -6,7 +6,8 @@ import com.baidu.unbiz.fluentvalidator.ValidatorContext;
 import com.baidu.unbiz.fluentvalidator.ValidatorHandler;
 import com.khakiout.study.ddddemo.domain.valueobject.EmailValueObject;
 
-public class EmailValidator extends ValidatorHandler<EmailValueObject> implements Validator<EmailValueObject> {
+public class EmailValidator extends ValidatorHandler<EmailValueObject> implements
+    Validator<EmailValueObject> {
 
     @Override
     public boolean validate(ValidatorContext context, EmailValueObject emailValueObject) {

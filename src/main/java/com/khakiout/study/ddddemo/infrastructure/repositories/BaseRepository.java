@@ -1,6 +1,7 @@
 package com.khakiout.study.ddddemo.infrastructure.repositories;
 
 import com.khakiout.study.ddddemo.domain.entity.BaseEntity;
+
 import java.util.List;
 
 /**

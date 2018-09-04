@@ -6,8 +6,10 @@ import com.khakiout.study.ddddemo.domain.valueobject.EmailValueObject;
 import com.khakiout.study.ddddemo.infrastructure.repositories.UserRepository;
 import com.khakiout.study.ddddemo.infrastructure.spring.SpringUserRepository;
 import com.khakiout.study.ddddemo.infrastructure.models.User;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,10 +78,10 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     // TODO: move this to transformer class
+
     /**
      * Transform entity.
      *
-     * @param entity
      * @return the user
      */
     private User transform(UserEntity entity) {
@@ -101,7 +103,6 @@ public class UserRepositoryImpl implements UserRepository {
     /**
      * Transform entity.
      *
-     * @param user
      * @return the user
      */
     private UserEntity transform(User user) {

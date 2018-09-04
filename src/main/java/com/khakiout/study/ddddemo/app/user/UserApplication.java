@@ -24,8 +24,13 @@ public class UserApplication implements BaseApplication<UserDTO> {
     @Autowired
     private final UserRepository userRepository;
 
-    public UserApplication(UserRepository userRepository) {
+    @Autowired
+    private final UserMapper userMapper;
+
+    public UserApplication(UserRepository userRepository, UserMapper userMapper) {
+        logger.debug("Starting service.");
         this.userRepository = userRepository;
+        this.userMapper = userMapper;
     }
 
     @Override
@@ -33,7 +38,7 @@ public class UserApplication implements BaseApplication<UserDTO> {
         List<UserEntity> users = userRepository.getAll();
         List<UserDTO> userDTOs = new ArrayList<>();
         users.forEach(user -> {
-            UserDTO dto = this.mapDTO(user);
+            UserDTO dto = userMapper.map(user);
 
             userDTOs.add(dto);
         });
@@ -44,14 +49,14 @@ public class UserApplication implements BaseApplication<UserDTO> {
     @Override
     public UserDTO findById(String id) {
         UserEntity user = userRepository.findById(id);
-        UserDTO dto = this.mapDTO(user);
+        UserDTO dto = userMapper.map(user);
 
         return dto;
     }
 
     @Override
     public void create(UserDTO userDTO) throws EntityValidationException {
-        UserEntity user = this.mapEntity(userDTO);
+        UserEntity user = userMapper.map(userDTO);
         userRepository.create(user);
     }
 
@@ -65,29 +70,4 @@ public class UserApplication implements BaseApplication<UserDTO> {
 
     }
 
-    // TODO: move to a mapper class
-    private UserDTO mapDTO(UserEntity user) {
-        UserDTO dto = new UserDTO();
-
-        if (user != null) {
-            dto.setId(user.getId());
-            dto.setFirstName(user.getFirstName());
-            dto.setLastName(user.getLastName());
-            String email = null;
-            if (user.getEmail() != null) {
-                email = user.getEmail().getEmail();
-            }
-            dto.setEmail(email);
-        }
-
-        return dto;
-    }
-
-    // TODO: move to a mapper class
-    private UserEntity mapEntity(UserDTO userDTO) throws EntityValidationException {
-        UserEntity userEntity = new UserEntity(null, userDTO.getFirstName(), userDTO.getLastName(),
-            userDTO.getEmail(), null, null);
-
-        return userEntity;
-    }
 }

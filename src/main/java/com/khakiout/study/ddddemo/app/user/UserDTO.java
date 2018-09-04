@@ -2,7 +2,7 @@ package com.khakiout.study.ddddemo.app.user;
 
 import com.khakiout.study.ddddemo.app.BaseDTO;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 public class UserDTO extends BaseDTO {
 
@@ -10,7 +10,7 @@ public class UserDTO extends BaseDTO {
     private String firstName;
     private String lastName;
     private String email;
-    private LocalDateTime birthday;
+    private Date birthday;
     private int age;
 
     public UserDTO() {
@@ -49,11 +49,11 @@ public class UserDTO extends BaseDTO {
         this.email = email;
     }
 
-    public LocalDateTime getBirthday() {
+    public Date getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(LocalDateTime birthday) {
+    public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
 

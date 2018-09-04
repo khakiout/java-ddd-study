@@ -32,8 +32,11 @@ dependencies {
     compile('ch.qos.logback.contrib:logback-jackson:0.1.5')
     compile('com.fasterxml.jackson.core:jackson-databind')
 	compile('commons-httpclient:commons-httpclient:3.1')
+	compile('com.baidu.unbiz:fluent-validator:1.0.9')
+	compile('commons-validator:commons-validator:1.4.0')
 	compile('org.liquibase:liquibase-core')
-	compile("com.h2database:h2")
+	compile('com.h2database:h2')
+
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	testCompile('io.projectreactor:reactor-test')
 }

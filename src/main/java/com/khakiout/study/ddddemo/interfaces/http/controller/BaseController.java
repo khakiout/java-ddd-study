@@ -1,15 +1,13 @@
 package com.khakiout.study.ddddemo.interfaces.http.controller;
 
-import com.khakiout.study.ddddemo.app.BaseDTO;
-
-import java.util.List;
-
-import org.springframework.http.ResponseEntity;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Mono;
 
 /**
  * Base for an HTTP controller.
  */
-public interface BaseController<T extends BaseDTO> {
+public interface BaseController<T> {
 
     /**
      * Get entity by its ID.
@@ -17,14 +15,14 @@ public interface BaseController<T extends BaseDTO> {
      * @param id the id
      * @return the http response with the entity representation.
      */
-    ResponseEntity<T> get(String id);
+    Mono<ServerResponse> get(ServerRequest request);
 
     /**
      * Get the list of the entities.
      *
      * @return the http response with the list of entities.
      */
-    ResponseEntity<List<T>> get();
+    Mono<ServerResponse> get();
 
     /**
      * Create an entity.
@@ -32,7 +30,7 @@ public interface BaseController<T extends BaseDTO> {
      * @param t the entity to be created.
      * @return the http response.
      */
-    ResponseEntity create(T t);
+    Mono<ServerResponse> create(ServerRequest request);
 
     /**
      * Modify an entity.
@@ -41,7 +39,7 @@ public interface BaseController<T extends BaseDTO> {
      * @param t the entity to be updated.
      * @return the http response.
      */
-    ResponseEntity update(String id, T t);
+    Mono<ServerResponse> update(ServerRequest request);
 
     /**
      * Delete the entity.
@@ -49,6 +47,6 @@ public interface BaseController<T extends BaseDTO> {
      * @param id the id
      * @return the http response
      */
-    ResponseEntity delete(String id);
+    Mono<ServerResponse> delete(ServerRequest request);
 
 }

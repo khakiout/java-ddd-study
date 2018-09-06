@@ -1,26 +1,20 @@
 package com.khakiout.study.ddddemo.interfaces.http.controller.user;
 
 import com.khakiout.study.ddddemo.app.user.UserApplication;
-import com.khakiout.study.ddddemo.app.user.UserDTO;
-import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
+import com.khakiout.study.ddddemo.domain.entity.UserEntity;
 import com.khakiout.study.ddddemo.interfaces.http.controller.BaseController;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Mono;
 
-@RestController
-@RequestMapping("users")
-public class UserController implements BaseController<UserDTO> {
+@Component
+public class UserController implements BaseController<UserEntity> {
 
     Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -31,47 +25,66 @@ public class UserController implements BaseController<UserDTO> {
         this.userApplication = userApplication;
     }
 
-    @Override
-    @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> get(@PathVariable String id) {
-        UserDTO userDTO = userApplication.findById(id);
+    public Mono<ServerResponse> get(ServerRequest request) {
+        String id = request.pathVariable("id");
+        Mono<UserEntity> userEntityMono = userApplication.findById(id);
 
-        return ResponseEntity.ok(userDTO);
+        return ServerResponse.ok()
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(userEntityMono, UserEntity.class);
     }
 
     @Override
-    @GetMapping("")
-    public ResponseEntity<List<UserDTO>> get() {
-        return ResponseEntity.ok(userApplication.getAll());
+    public Mono<ServerResponse> get() {
+        return ServerResponse.ok()
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(userApplication.getAll(), UserEntity.class);
     }
 
     @Override
-    @PostMapping("")
-    public ResponseEntity create(@RequestBody UserDTO userDTO) {
-        try {
-            userApplication.create(userDTO);
-            return ResponseEntity.ok(null);
-        } catch (EntityValidationException eve) {
-            logger.warn("Validation exception");
-            return ResponseEntity.badRequest().body(eve.getErrorMessages());
-        }
-
+    public Mono<ServerResponse> create(ServerRequest request) {
+        Mono<UserEntity> userEntityMono = request.bodyToMono(UserEntity.class);
+        return userEntityMono.subscribe(
+            /**
+             * TODO
+             * research how to handle throwable error on reactive streams properly
+             * possible reference: https://stackoverflow.com/questions/42842514/most-proper-way-to-throw-exception-as-validation-for-reactive-stream
+             */
+            userEntity -> userApplication.create(userEntity), // emit
+            throwable -> ServerResponse.status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON), // onError
+            () -> ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(userEntityMono, UserEntity.class) // onSuccess
+        );
     }
 
     @Override
-    @PutMapping("/{id}")
-    public ResponseEntity update(@PathVariable String id, @RequestBody UserDTO userDTO) {
-        userApplication.update(id, userDTO);
+    public Mono<ServerResponse> update(ServerRequest request) {
+        String id = request.pathVariable("id");
+        Mono<UserEntity> userEntityMono = request.bodyToMono(UserEntity.class);
 
-        return ResponseEntity.ok(null);
+
+        return userEntityMono.subscribe(
+            /**
+             * TODO
+             * research how to handle throwable error on reactive streams properly
+             * possible reference: https://stackoverflow.com/questions/42842514/most-proper-way-to-throw-exception-as-validation-for-reactive-stream
+             */
+            userEntity -> userApplication.update(id, userEntity).subscribe(), // emit
+            throwable -> ServerResponse.status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON), // onError,
+            () ->  ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(userEntityMono, UserEntity.class) // onSuccess
+        );
     }
 
     @Override
-    @DeleteMapping("/{id}")
-    public ResponseEntity delete(@PathVariable String id) {
-        userApplication.delete(id);
+    public Mono<ServerResponse> delete(ServerRequest request) {
+        String id = request.pathVariable("id");
+        Mono<Void> userEntity = userApplication.delete(id);
 
-        return ResponseEntity.ok(null);
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).build(userEntity);
     }
-
 }

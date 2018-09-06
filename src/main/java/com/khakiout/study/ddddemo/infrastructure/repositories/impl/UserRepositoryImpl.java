@@ -2,7 +2,7 @@ package com.khakiout.study.ddddemo.infrastructure.repositories.impl;
 
 import com.khakiout.study.ddddemo.domain.entity.UserEntity;
 import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
-import com.khakiout.study.ddddemo.domain.valueobject.EmailValueObject;
+import com.khakiout.study.ddddemo.infrastructure.mapper.UserMapper;
 import com.khakiout.study.ddddemo.infrastructure.repositories.UserRepository;
 import com.khakiout.study.ddddemo.infrastructure.spring.SpringUserRepository;
 import com.khakiout.study.ddddemo.infrastructure.models.User;
@@ -23,8 +23,11 @@ public class UserRepositoryImpl implements UserRepository {
     @Autowired
     final SpringUserRepository repository;
 
+    final UserMapper userMapper;
+
     public UserRepositoryImpl(SpringUserRepository repository) {
         this.repository = repository;
+        this.userMapper = new UserMapper();
     }
 
     @Override
@@ -32,8 +35,12 @@ public class UserRepositoryImpl implements UserRepository {
         Iterable<User> userIterable = repository.findAll();
         List<UserEntity> users = new ArrayList<>();
         userIterable.forEach(user -> {
-            UserEntity entity = transform(user);
-            users.add(entity);
+            try {
+                UserEntity userEntity = userMapper.map(user);
+                users.add(userEntity);
+            } catch (EntityValidationException eve) {
+                logger.error("This should not happen", eve);
+            }
         });
         logger.info("Found [{}] users", users.size());
 
@@ -47,7 +54,11 @@ public class UserRepositoryImpl implements UserRepository {
         UserEntity userEntity = null;
         User user = repository.findById(idValue).orElse(null);
         if (user != null) {
-            userEntity = transform(user);
+            try {
+                userEntity = userMapper.map(user);
+            } catch (EntityValidationException eve) {
+                logger.error("This should not happen", eve);
+            }
         }
         return userEntity;
     }
@@ -55,7 +66,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public void create(UserEntity userEntity) {
         logger.info("Creating user");
-        User user = this.transform(userEntity);
+        User user = userMapper.map(userEntity);
         repository.save(user);
         logger.info("User creation success");
     }
@@ -63,7 +74,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public void update(String id, UserEntity userEntity) {
         logger.info("Modifying user [{}]", id);
-        User user = this.transform(userEntity);
+        User user = userMapper.map(userEntity);
         if (this.findById(id) != null) {
             repository.save(user);
             logger.info("User modification success");
@@ -77,43 +88,4 @@ public class UserRepositoryImpl implements UserRepository {
 
     }
 
-    // TODO: move this to transformer class
-
-    /**
-     * Transform entity.
-     *
-     * @return the user
-     */
-    private User transform(UserEntity entity) {
-        User user = new User();
-        user.setId(entity.getId());
-        user.setFirstName(entity.getFirstName());
-        user.setLastName(entity.getLastName());
-        EmailValueObject entityEmail = entity.getEmail();
-        // TODO: remove null check
-        if (entityEmail != null) {
-            user.setEmail(entityEmail.getEmail());
-        }
-        user.setCreatedAt(entity.getCreatedAt());
-        user.setUpdatedAt(entity.getUpdatedAt());
-
-        return user;
-    }
-
-    /**
-     * Transform entity.
-     *
-     * @return the user
-     */
-    private UserEntity transform(User user) {
-        UserEntity userEntity = null;
-        try {
-            userEntity = new UserEntity(user.getId(), user.getFirstName(), user.getLastName(),
-                user.getEmail(), user.getCreatedAt(), user.getUpdatedAt());
-        } catch (EntityValidationException e) {
-            logger.error("Failed to parse data from repository.");
-        }
-
-        return userEntity;
-    }
 }

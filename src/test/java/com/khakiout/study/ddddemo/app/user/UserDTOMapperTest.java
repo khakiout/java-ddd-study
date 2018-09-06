@@ -7,12 +7,12 @@ import com.khakiout.study.ddddemo.domain.entity.UserEntity;
 import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
 import org.junit.Test;
 
-public class UserMapperTest {
+public class UserDTOMapperTest {
 
-    private final UserMapper mapper;
+    private final UserDTOMapper mapper;
 
-    public UserMapperTest() {
-        this.mapper = new UserMapper();
+    public UserDTOMapperTest() {
+        this.mapper = new UserDTOMapper();
     }
 
     @Test

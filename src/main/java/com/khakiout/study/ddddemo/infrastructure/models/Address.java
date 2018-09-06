@@ -1,5 +1,5 @@
 package com.khakiout.study.ddddemo.infrastructure.models;
 
-public class Address {
+public class Address extends BaseRepositoryModel {
 
 }

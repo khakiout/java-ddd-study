@@ -24,13 +24,12 @@ public class UserApplication implements BaseApplication<UserDTO> {
     @Autowired
     private final UserRepository userRepository;
 
-    @Autowired
-    private final UserMapper userMapper;
+    private final UserDTOMapper userMapper;
 
-    public UserApplication(UserRepository userRepository, UserMapper userMapper) {
+    public UserApplication(UserRepository userRepository) {
         logger.debug("Starting service.");
         this.userRepository = userRepository;
-        this.userMapper = userMapper;
+        this.userMapper = new UserDTOMapper();
     }
 
     @Override
@@ -49,7 +48,10 @@ public class UserApplication implements BaseApplication<UserDTO> {
     @Override
     public UserDTO findById(String id) {
         UserEntity user = userRepository.findById(id);
-        UserDTO dto = userMapper.map(user);
+        UserDTO dto = null;
+        if (user != null) {
+            dto = userMapper.map(user);
+        }
 
         return dto;
     }

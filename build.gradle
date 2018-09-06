@@ -26,7 +26,7 @@ repositories {
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-webflux')
-    compile('org.springframework.boot:spring-boot-starter-web')
+//    compile('org.springframework.boot:spring-boot-starter-web')
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
     compile('ch.qos.logback.contrib:logback-json-classic:0.1.5')
     compile('ch.qos.logback.contrib:logback-jackson:0.1.5')
@@ -36,9 +36,10 @@ dependencies {
     compile('commons-validator:commons-validator:1.4.0')
     compile('org.modelmapper:modelmapper:2.2.0')
     compile('org.liquibase:liquibase-core')
-    compile('com.h2database:h2')
+    runtime('com.h2database:h2')
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile('io.projectreactor:reactor-test')
 
+//    compileOnly('org.projectlombok:lombok')
 }

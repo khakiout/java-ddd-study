@@ -22,7 +22,7 @@ public interface BaseController<T> {
      *
      * @return the http response with the list of entities.
      */
-    Mono<ServerResponse> get();
+    Mono<ServerResponse> list(ServerRequest request);
 
     /**
      * Create an entity.

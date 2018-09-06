@@ -36,9 +36,13 @@ public class UserApplication implements BaseApplication<UserEntity> {
     }
 
     @Override
-    public Mono<UserEntity> create(UserEntity userEntity) throws EntityValidationException {
-        userEntity.validate();
-        return userRepository.create(userEntity);
+    public Mono<UserEntity> create(UserEntity userEntity) {
+        try {
+            userEntity.validate();
+            return userRepository.create(userEntity);
+        } catch (EntityValidationException eve) {
+            return Mono.error(eve);
+        }
     }
 
     @Override

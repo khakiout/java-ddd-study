@@ -2,6 +2,8 @@ package com.khakiout.study.ddddemo.interfaces.http.controller.user;
 
 import com.khakiout.study.ddddemo.app.user.UserApplication;
 import com.khakiout.study.ddddemo.domain.entity.UserEntity;
+import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
+import com.khakiout.study.ddddemo.infrastructure.models.User;
 import com.khakiout.study.ddddemo.interfaces.http.controller.BaseController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +27,14 @@ public class UserController implements BaseController<UserEntity> {
         this.userApplication = userApplication;
     }
 
+    @Override
+    public Mono<ServerResponse> list(ServerRequest request) {
+        return ServerResponse.ok()
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(userApplication.getAll(), UserEntity.class);
+    }
+
+    @Override
     public Mono<ServerResponse> get(ServerRequest request) {
         String id = request.pathVariable("id");
         Mono<UserEntity> userEntityMono = userApplication.findById(id);
@@ -35,28 +45,16 @@ public class UserController implements BaseController<UserEntity> {
     }
 
     @Override
-    public Mono<ServerResponse> get() {
-        return ServerResponse.ok()
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(userApplication.getAll(), UserEntity.class);
-    }
-
-    @Override
     public Mono<ServerResponse> create(ServerRequest request) {
-        Mono<UserEntity> userEntityMono = request.bodyToMono(UserEntity.class);
-        return userEntityMono.subscribe(
-            /**
-             * TODO
-             * research how to handle throwable error on reactive streams properly
-             * possible reference: https://stackoverflow.com/questions/42842514/most-proper-way-to-throw-exception-as-validation-for-reactive-stream
-             */
-            userEntity -> userApplication.create(userEntity), // emit
-            throwable -> ServerResponse.status(HttpStatus.BAD_REQUEST)
-                .contentType(MediaType.APPLICATION_JSON), // onError
-            () -> ServerResponse.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(userEntityMono, UserEntity.class) // onSuccess
-        );
+        return request.bodyToMono(UserEntity.class)
+            .doOnSuccess(userEntity -> {
+                this.userApplication.create(userEntity)
+                    .flatMap(userEntity1 -> Mono.just(userEntity));
+            }).flatMap(userEntity -> {
+                return ServerResponse.ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(Mono.just(userEntity), UserEntity.class);
+            });
     }
 
     @Override
@@ -65,19 +63,21 @@ public class UserController implements BaseController<UserEntity> {
         Mono<UserEntity> userEntityMono = request.bodyToMono(UserEntity.class);
 
 
-        return userEntityMono.subscribe(
-            /**
-             * TODO
-             * research how to handle throwable error on reactive streams properly
-             * possible reference: https://stackoverflow.com/questions/42842514/most-proper-way-to-throw-exception-as-validation-for-reactive-stream
-             */
-            userEntity -> userApplication.update(id, userEntity).subscribe(), // emit
-            throwable -> ServerResponse.status(HttpStatus.BAD_REQUEST)
-                .contentType(MediaType.APPLICATION_JSON), // onError,
-            () ->  ServerResponse.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(userEntityMono, UserEntity.class) // onSuccess
-        );
+//        return userEntityMono.subscribe(
+//            /**
+//             * TODO
+//             * research how to handle throwable error on reactive streams properly
+//             * possible reference: https://stackoverflow.com/questions/42842514/most-proper-way-to-throw-exception-as-validation-for-reactive-stream
+//             */
+//            userEntity -> userApplication.update(id, userEntity).subscribe(), // emit
+//            throwable -> ServerResponse.status(HttpStatus.BAD_REQUEST)
+//                .contentType(MediaType.APPLICATION_JSON), // onError,
+//            () ->  ServerResponse.ok()
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .body(userEntityMono, UserEntity.class) // onSuccess
+//        );
+
+        return Mono.empty();
     }
 
     @Override

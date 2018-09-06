@@ -11,24 +11,28 @@ import java.util.Date;
 public class UserEntity extends BaseEntity<Long> {
 
     @FluentValidate({NameValidator.class})
-    private final String firstName;
+    private String firstName;
 
     @FluentValidate({NameValidator.class})
-    private final String lastName;
+    private String lastName;
 
     @FluentValidate({EmailValidator.class})
-    private final EmailValueObject email;
+    private EmailValueObject email;
 
-    private final Date createdAt;
-    private final Date updatedAt;
+    private Date createdAt;
+    private Date updatedAt;
+
+    public UserEntity() {
+        super();
+    }
 
     public UserEntity(Long id, String firstName, String lastName,
-        String email) throws EntityValidationException {
+        String email) {
         this(id, firstName, lastName, email, null, null);
     }
 
     public UserEntity(Long id, String firstName, String lastName,
-        String email, Date createdAt, Date updatedAt) throws EntityValidationException {
+        String email, Date createdAt, Date updatedAt) {
         super(id);
         this.firstName = firstName;
         this.lastName = lastName;

@@ -12,7 +12,11 @@ import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
  */
 public abstract class BaseEntity<T> {
 
-    protected final T id;
+    protected T id;
+
+    protected BaseEntity() {
+
+    }
 
     protected BaseEntity(T id) {
         this.id = id;

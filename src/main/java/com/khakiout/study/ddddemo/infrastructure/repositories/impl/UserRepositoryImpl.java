@@ -116,13 +116,8 @@ public class UserRepositoryImpl implements UserRepository {
      * @return the user
      */
     private UserEntity transform(User user) {
-        UserEntity userEntity = null;
-        try {
-            userEntity = new UserEntity(user.getId(), user.getFirstName(), user.getLastName(),
-                user.getEmail(), user.getCreatedAt(), user.getUpdatedAt());
-        } catch (EntityValidationException e) {
-            logger.error("Failed to parse data from repository.");
-        }
+       UserEntity userEntity = new UserEntity(user.getId(), user.getFirstName(), user.getLastName(),
+            user.getEmail(), user.getCreatedAt(), user.getUpdatedAt());
 
         return userEntity;
     }

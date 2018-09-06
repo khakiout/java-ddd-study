@@ -14,7 +14,7 @@ public interface BaseApplication<T> {
 
     Mono<T> findById(String id);
 
-    Mono<T> create(T t) throws EntityValidationException;
+    Mono<T> create(T t);
 
     Mono<T> update(String id, T t) throws EntityValidationException;
 

@@ -1,6 +1,5 @@
 package com.khakiout.study.ddddemo.domain.entity;
 
-import com.baidu.unbiz.fluentvalidator.ComplexResult;
 import com.baidu.unbiz.fluentvalidator.annotation.FluentValidate;
 import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
 import com.khakiout.study.ddddemo.domain.validation.validator.EmailValidator;
@@ -36,11 +35,6 @@ public class UserEntity extends BaseEntity<Long> {
         this.email = new EmailValueObject(email);
         this.createdAt = (createdAt != null) ? createdAt : new Date();
         this.updatedAt = (updatedAt != null) ? updatedAt : new Date();
-
-        ComplexResult validationResult = this.validate();
-        if (!validationResult.isSuccess()) {
-            throw new EntityValidationException(validationResult);
-        }
     }
 
     public Long getId() {

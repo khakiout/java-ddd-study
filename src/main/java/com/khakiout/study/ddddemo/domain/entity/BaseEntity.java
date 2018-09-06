@@ -5,6 +5,7 @@ import static com.baidu.unbiz.fluentvalidator.ResultCollectors.toComplex;
 import com.baidu.unbiz.fluentvalidator.ComplexResult;
 import com.baidu.unbiz.fluentvalidator.FluentValidator;
 import com.baidu.unbiz.fluentvalidator.registry.impl.SimpleRegistry;
+import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
 
 /**
  * Abstract class for entity.
@@ -22,7 +23,7 @@ public abstract class BaseEntity<T> {
      *
      * @return the validation result.
      */
-    protected ComplexResult validate() {
+    public void validate() throws EntityValidationException {
         ComplexResult result = FluentValidator.checkAll()
             .failOver()
             .configure(new SimpleRegistry())
@@ -30,6 +31,8 @@ public abstract class BaseEntity<T> {
             .doValidate()
             .result(toComplex());
 
-        return result;
+        if (!result.isSuccess()) {
+            throw new EntityValidationException(result);
+        }
     }
 }

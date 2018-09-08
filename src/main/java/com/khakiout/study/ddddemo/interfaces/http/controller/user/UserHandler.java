@@ -5,6 +5,7 @@ import com.khakiout.study.ddddemo.domain.entity.UserEntity;
 import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
 import com.khakiout.study.ddddemo.domain.validation.response.ValidationReport;
 import com.khakiout.study.ddddemo.interfaces.http.controller.BaseHandler;
+import javax.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,8 +113,14 @@ public class UserHandler implements BaseHandler {
     @Override
     public Mono<ServerResponse> delete(ServerRequest request) {
         String id = request.pathVariable("id");
-        Mono<Void> userEntity = userApplication.delete(id);
+        Mono<Void> deleteUserAction = userApplication.delete(id);
 
-        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).build(userEntity);
+        return deleteUserAction
+            .flatMap(action -> ServerResponse.ok().build())
+            .onErrorResume(EntityNotFoundException.class, enfe -> {
+                return ServerResponse.status(HttpStatus.NOT_FOUND)
+                    .body(Mono.just("Nothing here"), String.class);
+            });
+
     }
 }

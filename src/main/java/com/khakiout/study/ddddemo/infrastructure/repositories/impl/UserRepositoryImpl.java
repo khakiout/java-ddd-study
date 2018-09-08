@@ -85,6 +85,8 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Mono<Void> delete(String id) {
+        logger.info("Deleting user [{}]", id);
+        repository.deleteById(Long.valueOf(id));
         return Mono.empty();
     }
 

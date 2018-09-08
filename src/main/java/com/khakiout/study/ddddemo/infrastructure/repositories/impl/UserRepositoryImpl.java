@@ -1,7 +1,6 @@
 package com.khakiout.study.ddddemo.infrastructure.repositories.impl;
 
 import com.khakiout.study.ddddemo.domain.entity.UserEntity;
-import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
 import com.khakiout.study.ddddemo.domain.valueobject.EmailValueObject;
 import com.khakiout.study.ddddemo.infrastructure.repositories.UserRepository;
 import com.khakiout.study.ddddemo.infrastructure.spring.SpringUserRepository;
@@ -10,10 +9,13 @@ import com.khakiout.study.ddddemo.infrastructure.models.User;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 public class UserRepositoryImpl implements UserRepository {
@@ -28,7 +30,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<UserEntity> getAll() {
+    public Flux<UserEntity> getAll() {
         Iterable<User> userIterable = repository.findAll();
         List<UserEntity> users = new ArrayList<>();
         userIterable.forEach(user -> {
@@ -37,44 +39,55 @@ public class UserRepositoryImpl implements UserRepository {
         });
         logger.info("Found [{}] users", users.size());
 
-        return users;
+        return Flux.fromIterable(users);
     }
 
     @Override
-    public UserEntity findById(String id) {
+    public Mono<UserEntity> findById(String id) {
         Long idValue = Long.valueOf(id);
 
         UserEntity userEntity = null;
-        User user = repository.findById(idValue).orElse(null);
-        if (user != null) {
-            userEntity = transform(user);
+        Optional<User> user = repository.findById(idValue);
+        if (user.isPresent()) {
+            userEntity = transform(user.get());
         }
-        return userEntity;
+
+        return Mono.justOrEmpty(userEntity);
     }
 
     @Override
-    public void create(UserEntity userEntity) {
+    public Mono<UserEntity> create(UserEntity userEntity) {
         logger.info("Creating user");
+
         User user = this.transform(userEntity);
-        repository.save(user);
+
+        User created = repository.save(user);
         logger.info("User creation success");
+
+        return Mono.just(transform(created));
     }
 
     @Override
-    public void update(String id, UserEntity userEntity) {
+    public Mono<UserEntity> update(String id, UserEntity userEntity) {
         logger.info("Modifying user [{}]", id);
         User user = this.transform(userEntity);
         if (this.findById(id) != null) {
             repository.save(user);
+            Optional<User> modified = repository.findById(Long.valueOf(user.getId()));
             logger.info("User modification success");
+
+            return Mono.just(transform(modified.get()));
         } else {
             logger.warn("Failed to update missing user");
+            return Mono.empty();
         }
     }
 
     @Override
-    public void delete(String id) {
-
+    public Mono<Void> delete(String id) {
+        logger.info("Deleting user [{}]", id);
+        repository.deleteById(Long.valueOf(id));
+        return Mono.empty();
     }
 
     // TODO: move this to transformer class
@@ -106,13 +119,8 @@ public class UserRepositoryImpl implements UserRepository {
      * @return the user
      */
     private UserEntity transform(User user) {
-        UserEntity userEntity = null;
-        try {
-            userEntity = new UserEntity(user.getId(), user.getFirstName(), user.getLastName(),
-                user.getEmail(), user.getCreatedAt(), user.getUpdatedAt());
-        } catch (EntityValidationException e) {
-            logger.error("Failed to parse data from repository.");
-        }
+       UserEntity userEntity = new UserEntity(user.getId(), user.getFirstName(), user.getLastName(),
+            user.getEmail(), user.getCreatedAt(), user.getUpdatedAt());
 
         return userEntity;
     }

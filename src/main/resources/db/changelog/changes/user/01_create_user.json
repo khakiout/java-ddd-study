@@ -49,13 +49,15 @@
                 {
                   "column": {
                     "name": "created_at",
-                    "type": "datetime"
+                    "type": "datetime",
+                    "defaultValueComputed": "CURRENT_TIMESTAMP"
                   }
                 },
                 {
                   "column": {
                     "name": "updated_at",
-                    "type": "datetime"
+                    "type": "datetime",
+                    "defaultValueComputed": "CURRENT_TIMESTAMP"
                   }
                 }
               ]

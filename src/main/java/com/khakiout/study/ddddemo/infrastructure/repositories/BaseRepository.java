@@ -1,22 +1,23 @@
 package com.khakiout.study.ddddemo.infrastructure.repositories;
 
 import com.khakiout.study.ddddemo.domain.entity.BaseEntity;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.List;
 
 /**
  * Base repository.
  */
 public interface BaseRepository<T extends BaseEntity> {
 
-    List<T> getAll();
+    Flux<T> getAll();
 
-    T findById(String id);
+    Mono<T> findById(String id);
 
-    void create(T t);
+    Mono<T> create(T t);
 
-    void update(String id, T t);
+    Mono<T> update(String id, T t);
 
-    void delete(String id);
+    Mono<Void> delete(String id);
 
 }

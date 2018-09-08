@@ -4,20 +4,19 @@ package com.khakiout.study.ddddemo.app;
  * Base Application
  */
 
-import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.List;
+public interface BaseApplication<T> {
 
-public interface BaseApplication<T extends BaseDTO> {
+    Flux<T> getAll();
 
-    List<T> getAll();
+    Mono<T> findById(String id);
 
-    T findById(String id);
+    Mono<T> create(T t);
 
-    void create(T t) throws EntityValidationException;
+    Mono<T> update(String id, T t);
 
-    void update(String id, T t);
-
-    void delete(String id);
+    Mono<Void> delete(String id);
 
 }

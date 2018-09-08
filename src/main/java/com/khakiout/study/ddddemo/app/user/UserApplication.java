@@ -5,69 +5,73 @@ import com.khakiout.study.ddddemo.domain.entity.UserEntity;
 import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
 import com.khakiout.study.ddddemo.infrastructure.repositories.UserRepository;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import javax.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-/**
- * TODO: add reactive
- */
 @Service
-public class UserApplication implements BaseApplication<UserDTO> {
+public class UserApplication implements BaseApplication<UserEntity> {
 
     Logger logger = LoggerFactory.getLogger(UserApplication.class);
 
     @Autowired
     private final UserRepository userRepository;
 
-    @Autowired
-    private final UserMapper userMapper;
-
-    public UserApplication(UserRepository userRepository, UserMapper userMapper) {
+    public UserApplication(UserRepository userRepository) {
         logger.debug("Starting service.");
         this.userRepository = userRepository;
-        this.userMapper = userMapper;
     }
 
     @Override
-    public List<UserDTO> getAll() {
-        List<UserEntity> users = userRepository.getAll();
-        List<UserDTO> userDTOs = new ArrayList<>();
-        users.forEach(user -> {
-            UserDTO dto = userMapper.map(user);
-
-            userDTOs.add(dto);
-        });
-
-        return userDTOs;
+    public Flux<UserEntity> getAll() {
+        return userRepository.getAll();
     }
 
     @Override
-    public UserDTO findById(String id) {
-        UserEntity user = userRepository.findById(id);
-        UserDTO dto = userMapper.map(user);
-
-        return dto;
+    public Mono<UserEntity> findById(String id) {
+        logger.info("Retrieving entity [{}]", id);
+        return userRepository.findById(id);
     }
 
     @Override
-    public void create(UserDTO userDTO) throws EntityValidationException {
-        UserEntity user = userMapper.map(userDTO);
-        userRepository.create(user);
+    public Mono<UserEntity> create(UserEntity userEntity) {
+        try {
+            logger.info("Creating user.");
+            userEntity.validate();
+            return userRepository.create(userEntity);
+        } catch (EntityValidationException eve) {
+            logger.error(eve.getMessage());
+            return Mono.error(eve);
+        }
     }
 
     @Override
-    public void update(String id, UserDTO userDTO) {
-
+    public Mono<UserEntity> update(String id, UserEntity userEntity) {
+        try {
+            logger.info("Updating user for with id of [{}]", id);
+            userEntity.validate();
+            if (Long.valueOf(id) != userEntity.getId()) {
+                // TODO: Add invalid state
+                return Mono.error(new DataAccessResourceFailureException("Bad"));
+            }
+            return userRepository.update(id, userEntity);
+        } catch (EntityValidationException eve) {
+            logger.error(eve.getMessage());
+            return Mono.error(eve);
+        }
     }
 
     @Override
-    public void delete(String id) {
-
+    public Mono<Void> delete(String id) {
+        logger.info("Deleting [{}]", id);
+        return this.findById(id)
+            .switchIfEmpty(Mono.error(new EntityNotFoundException()))
+            .flatMap(userEntity -> userRepository.delete(id));
     }
 
 }

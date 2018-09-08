@@ -17,6 +17,7 @@ public class UserEntityTest {
         EntityValidationException eve = null;
         try {
             UserEntity user = new UserEntity(1L, "Lola", "Batista", "lobat@gmail.com");
+            user.validate();
         } catch (EntityValidationException exception) {
             eve = exception;
         }
@@ -29,6 +30,7 @@ public class UserEntityTest {
         EntityValidationException eve = null;
         try {
             UserEntity user = new UserEntity(1L, "", "Batista", "lobat@gmail.com");
+            user.validate();
         } catch (EntityValidationException exception) {
             eve = exception;
         }
@@ -43,6 +45,7 @@ public class UserEntityTest {
         EntityValidationException eve = null;
         try {
             UserEntity user = new UserEntity(1L, "Lola", null, "lobat@gmail.com");
+            user.validate();
         } catch (EntityValidationException exception) {
             eve = exception;
         }
@@ -57,6 +60,7 @@ public class UserEntityTest {
         EntityValidationException eve = null;
         try {
             UserEntity user = new UserEntity(1L, "Lola", "Batista", "l.com");
+            user.validate();
         } catch (EntityValidationException exception) {
             eve = exception;
         }
@@ -71,6 +75,7 @@ public class UserEntityTest {
         EntityValidationException eve = null;
         try {
             UserEntity user = new UserEntity(null, null, null, "l.com");
+            user.validate();
         } catch (EntityValidationException exception) {
             eve = exception;
         }

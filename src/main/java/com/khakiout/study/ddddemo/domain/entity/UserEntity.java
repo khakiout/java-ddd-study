@@ -1,7 +1,9 @@
 package com.khakiout.study.ddddemo.domain.entity;
 
-import com.baidu.unbiz.fluentvalidator.ComplexResult;
 import com.baidu.unbiz.fluentvalidator.annotation.FluentValidate;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
 import com.khakiout.study.ddddemo.domain.validation.validator.EmailValidator;
 import com.khakiout.study.ddddemo.domain.validation.validator.NameValidator;
@@ -12,35 +14,34 @@ import java.util.Date;
 public class UserEntity extends BaseEntity<Long> {
 
     @FluentValidate({NameValidator.class})
-    private final String firstName;
+    private String firstName;
 
     @FluentValidate({NameValidator.class})
-    private final String lastName;
+    private String lastName;
 
     @FluentValidate({EmailValidator.class})
-    private final EmailValueObject email;
+    private EmailValueObject email;
 
-    private final Date createdAt;
-    private final Date updatedAt;
+    public UserEntity() {
+        super();
+    }
 
     public UserEntity(Long id, String firstName, String lastName,
-        String email) throws EntityValidationException {
+        String email) {
         this(id, firstName, lastName, email, null, null);
     }
 
     public UserEntity(Long id, String firstName, String lastName,
-        String email, Date createdAt, Date updatedAt) throws EntityValidationException {
-        super(id);
+        String email, Date createdAt, Date updatedAt) {
+        super(id, createdAt, updatedAt);
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = new EmailValueObject(email);
-        this.createdAt = (createdAt != null) ? createdAt : new Date();
-        this.updatedAt = (updatedAt != null) ? updatedAt : new Date();
+    }
 
-        ComplexResult validationResult = this.validate();
-        if (!validationResult.isSuccess()) {
-            throw new EntityValidationException(validationResult);
-        }
+    @JsonSetter("email")
+    public void setEmail(String email) {
+        this.email = new EmailValueObject(email);
     }
 
     public Long getId() {
@@ -55,16 +56,18 @@ public class UserEntity extends BaseEntity<Long> {
         return lastName;
     }
 
+    @JsonIgnore
     public EmailValueObject getEmail() {
         return email;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
-    }
+    @JsonGetter("email")
+    public String getEmailValue() {
+        if (email != null) {
+            return email.getEmail();
+        }
 
-    public Date getUpdatedAt() {
-        return updatedAt;
+        return null;
     }
 
 }

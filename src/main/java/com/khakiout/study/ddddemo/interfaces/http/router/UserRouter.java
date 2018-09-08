@@ -1,4 +1,4 @@
-package com.khakiout.study.ddddemo.interfaces.http.controller;
+package com.khakiout.study.ddddemo.interfaces.http.router;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.RequestPredicates.DELETE;
@@ -8,28 +8,43 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 import static org.springframework.web.reactive.function.server.RequestPredicates.contentType;
 
-import com.khakiout.study.ddddemo.interfaces.http.controller.user.UserController;
+import com.khakiout.study.ddddemo.interfaces.http.controller.user.UserHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+/**
+ * Routers for Users.
+ */
 @Configuration
 public class UserRouter {
 
     @Bean
-    public RouterFunction<ServerResponse> route(UserController handler) {
+    public RouterFunction<ServerResponse> route(UserHandler handler) {
 
-        return RouterFunctions.route(GET("/users/{id}").and(accept(APPLICATION_JSON)), handler::show)
-            .andRoute(GET("/users").and(accept(APPLICATION_JSON)), handler::index)
+        return RouterFunctions
+            .route(
+                GET("/users")
+                    .and(accept(APPLICATION_JSON)).and(contentType(APPLICATION_JSON)),
+                handler::index)
             .andRoute(
-                POST("/users").and(accept(APPLICATION_JSON)).and(contentType(APPLICATION_JSON)),
+                GET("/users/{id}")
+                    .and(accept(APPLICATION_JSON)).and(contentType(APPLICATION_JSON)),
+                handler::show)
+            .andRoute(
+                POST("/users")
+                    .and(accept(APPLICATION_JSON)).and(contentType(APPLICATION_JSON)),
                 handler::create)
             .andRoute(
-                PUT("/users/{id}").and(accept(APPLICATION_JSON)).and(contentType(APPLICATION_JSON)),
+                PUT("/users/{id}")
+                    .and(accept(APPLICATION_JSON)).and(contentType(APPLICATION_JSON)),
                 handler::update)
-            .andRoute(DELETE("/users/{id}"), handler::delete);
+            .andRoute(
+                DELETE("/users/{id}")
+                    .and(accept(APPLICATION_JSON)).and(contentType(APPLICATION_JSON)),
+                handler::delete);
 
     }
 

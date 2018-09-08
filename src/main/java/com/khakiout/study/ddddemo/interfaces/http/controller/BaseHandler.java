@@ -5,21 +5,24 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 /**
- * Base for an HTTP controller.
+ * Base for a Route handler for specific Entity.
+ *
+ * @see com.khakiout.study.ddddemo.domain.entity.BaseEntity
  */
-public interface BaseController<T> {
+public interface BaseHandler {
 
     /**
      * Get the list of the entities.
      *
-     * @return the http response with the list of entities.
+     * @param request the server request
+     * @return the http response with the list of Entities.
      */
     Mono<ServerResponse> index(ServerRequest request);
 
     /**
      * Get entity by its ID.
      *
-     * @param id the id
+     * @param request the server request with the Entity ID as request param.
      * @return the http response with the entity representation.
      */
     Mono<ServerResponse> show(ServerRequest request);
@@ -27,7 +30,7 @@ public interface BaseController<T> {
     /**
      * Create an entity.
      *
-     * @param t the entity to be created.
+     * @param request the server request with the Entity details to be created.
      * @return the http response.
      */
     Mono<ServerResponse> create(ServerRequest request);
@@ -35,16 +38,15 @@ public interface BaseController<T> {
     /**
      * Modify an entity.
      *
-     * @param id the id
-     * @param t the entity to be updated.
+     * @param request the server request with the Entity details to be updated.
      * @return the http response.
      */
     Mono<ServerResponse> update(ServerRequest request);
 
     /**
-     * Delete the entity.
+     * Delete an entity.
      *
-     * @param id the id
+     * @param request the server request with Entity ID as route entry.
      * @return the http response
      */
     Mono<ServerResponse> delete(ServerRequest request);

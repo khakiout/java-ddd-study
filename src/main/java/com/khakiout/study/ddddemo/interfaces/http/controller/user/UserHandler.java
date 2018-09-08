@@ -4,8 +4,7 @@ import com.khakiout.study.ddddemo.app.user.UserApplication;
 import com.khakiout.study.ddddemo.domain.entity.UserEntity;
 import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
 import com.khakiout.study.ddddemo.domain.validation.response.ValidationReport;
-import com.khakiout.study.ddddemo.infrastructure.models.User;
-import com.khakiout.study.ddddemo.interfaces.http.controller.BaseController;
+import com.khakiout.study.ddddemo.interfaces.http.controller.BaseHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +16,14 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 @Component
-public class UserController implements BaseController<UserEntity> {
+public class UserHandler implements BaseHandler {
 
-    Logger logger = LoggerFactory.getLogger(UserController.class);
+    Logger logger = LoggerFactory.getLogger(UserHandler.class);
 
     @Autowired
     private final UserApplication userApplication;
 
-    public UserController(UserApplication userApplication) {
+    public UserHandler(UserApplication userApplication) {
         this.userApplication = userApplication;
     }
 

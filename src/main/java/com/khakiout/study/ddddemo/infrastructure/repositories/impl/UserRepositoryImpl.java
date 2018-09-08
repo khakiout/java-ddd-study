@@ -10,6 +10,7 @@ import com.khakiout.study.ddddemo.infrastructure.models.User;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,12 +48,12 @@ public class UserRepositoryImpl implements UserRepository {
         Long idValue = Long.valueOf(id);
 
         UserEntity userEntity = null;
-        User user = repository.findById(idValue).orElse(null);
-        if (user != null) {
-            userEntity = transform(user);
+        Optional<User> user = repository.findById(idValue);
+        if (user.isPresent()) {
+            userEntity = transform(user.get());
         }
 
-        return Mono.just(userEntity);
+        return Mono.justOrEmpty(userEntity);
     }
 
     @Override

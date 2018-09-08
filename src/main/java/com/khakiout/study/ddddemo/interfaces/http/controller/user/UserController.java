@@ -30,6 +30,7 @@ public class UserController implements BaseController<UserEntity> {
 
     @Override
     public Mono<ServerResponse> index(ServerRequest request) {
+
         return ServerResponse.ok()
             .contentType(MediaType.APPLICATION_JSON)
             .body(userApplication.getAll(), UserEntity.class);
@@ -40,9 +41,19 @@ public class UserController implements BaseController<UserEntity> {
         String id = request.pathVariable("id");
         Mono<UserEntity> userEntityMono = userApplication.findById(id);
 
-        return ServerResponse.ok()
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(userEntityMono, UserEntity.class);
+        return userEntityMono
+            .flatMap(userEntity -> {
+                return ServerResponse.ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(userEntityMono, UserEntity.class);
+            })
+            .switchIfEmpty(ServerResponse.notFound().build())
+            .onErrorResume(error -> {
+                logger.error(error.getMessage());
+                return ServerResponse
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .contentType(MediaType.APPLICATION_JSON).build();
+            });
     }
 
     @Override

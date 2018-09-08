@@ -1,7 +1,6 @@
 package com.khakiout.study.ddddemo.infrastructure.repositories.impl;
 
 import com.khakiout.study.ddddemo.domain.entity.UserEntity;
-import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
 import com.khakiout.study.ddddemo.domain.valueobject.EmailValueObject;
 import com.khakiout.study.ddddemo.infrastructure.repositories.UserRepository;
 import com.khakiout.study.ddddemo.infrastructure.spring.SpringUserRepository;
@@ -73,10 +72,11 @@ public class UserRepositoryImpl implements UserRepository {
         logger.info("Modifying user [{}]", id);
         User user = this.transform(userEntity);
         if (this.findById(id) != null) {
-            User created = repository.save(user);
+            repository.save(user);
+            Optional<User> modified = repository.findById(Long.valueOf(user.getId()));
             logger.info("User modification success");
 
-            return Mono.just(transform(created));
+            return Mono.just(transform(modified.get()));
         } else {
             logger.warn("Failed to update missing user");
             return Mono.empty();

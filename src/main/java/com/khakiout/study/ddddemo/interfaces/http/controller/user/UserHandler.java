@@ -5,10 +5,12 @@ import com.khakiout.study.ddddemo.domain.entity.UserEntity;
 import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
 import com.khakiout.study.ddddemo.domain.validation.response.ValidationReport;
 import com.khakiout.study.ddddemo.interfaces.http.controller.BaseHandler;
+import java.net.URI;
 import javax.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -68,8 +70,8 @@ public class UserHandler implements BaseHandler {
                 logger.info("Done processing user creation.");
                 return createdUser
                     .flatMap(userEntity -> {
-                        logger.info("OKK");
-                        return ServerResponse.ok()
+                        logger.info("OK");
+                        return ServerResponse.created(URI.create("/users/" + userEntity.getId()))
                             .contentType(MediaType.APPLICATION_JSON)
                             .body(createdUser, UserEntity.class);
                     })
@@ -91,23 +93,40 @@ public class UserHandler implements BaseHandler {
     @Override
     public Mono<ServerResponse> update(ServerRequest request) {
         String id = request.pathVariable("id");
-        Mono<UserEntity> userEntityMono = request.bodyToMono(UserEntity.class);
 
-//        return userEntityMono.subscribe(
-//            /**
-//             * TODO
-//             * research how to handle throwable error on reactive streams properly
-//             * possible reference: https://stackoverflow.com/questions/42842514/most-proper-way-to-throw-exception-as-validation-for-reactive-stream
-//             */
-//            userEntity -> userApplication.update(id, userEntity).subscribe(), // emit
-//            throwable -> ServerResponse.status(HttpStatus.BAD_REQUEST)
-//                .contentType(MediaType.APPLICATION_JSON), // onError,
-//            () ->  ServerResponse.ok()
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .body(userEntityMono, UserEntity.class) // onSuccess
-//        );
-
-        return Mono.empty();
+        return request.bodyToMono(UserEntity.class)
+            .map(userEntity -> {
+                logger.info("Got user entity for modification.");
+                return this.userApplication.update(id, userEntity);
+            })
+            .flatMap(createdUser -> {
+                logger.info("Done processing user creation.");
+                return createdUser
+                    .flatMap(userEntity -> {
+                        logger.info("Updated user!");
+                        return ServerResponse.ok()
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .body(createdUser, UserEntity.class);
+                    })
+                    .onErrorResume(EntityValidationException.class, eve -> {
+                        logger.error(eve.getMessage());
+                        return ServerResponse.badRequest()
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .body(Mono.just(eve.getErrorMessages()), ValidationReport.class);
+                    })
+                    .onErrorResume(DataAccessResourceFailureException.class, drfe -> {
+                        logger.error("Unauthorized modification");
+                        return ServerResponse.status(HttpStatus.UNAUTHORIZED)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .body(Mono.just("Can't modify what's not yours."), String.class);
+                    })
+                    .onErrorResume(error -> {
+                        logger.error(error.getMessage());
+                        return ServerResponse
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .contentType(MediaType.APPLICATION_JSON).build();
+                    });
+            });
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.baidu.unbiz.fluentvalidator.ComplexResult;
 import com.baidu.unbiz.fluentvalidator.FluentValidator;
 import com.baidu.unbiz.fluentvalidator.registry.impl.SimpleRegistry;
 import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
+import java.util.Date;
 
 /**
  * Abstract class for entity.
@@ -13,13 +14,25 @@ import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
 public abstract class BaseEntity<T> {
 
     protected T id;
+    protected Date createdAt;
+    protected Date updatedAt;
 
     protected BaseEntity() {
-
+        this.createdAt = this.updatedAt = new Date();
     }
 
-    protected BaseEntity(T id) {
+    protected BaseEntity(T id, Date createdAt, Date updatedAt) {
         this.id = id;
+        this.createdAt = (createdAt != null) ? createdAt : new Date();
+        this.updatedAt = (updatedAt != null) ? updatedAt : this.createdAt;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
     }
 
     /**

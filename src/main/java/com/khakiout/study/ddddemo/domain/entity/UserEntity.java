@@ -1,6 +1,9 @@
 package com.khakiout.study.ddddemo.domain.entity;
 
 import com.baidu.unbiz.fluentvalidator.annotation.FluentValidate;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
 import com.khakiout.study.ddddemo.domain.validation.validator.EmailValidator;
 import com.khakiout.study.ddddemo.domain.validation.validator.NameValidator;
@@ -19,9 +22,6 @@ public class UserEntity extends BaseEntity<Long> {
     @FluentValidate({EmailValidator.class})
     private EmailValueObject email;
 
-    private Date createdAt;
-    private Date updatedAt;
-
     public UserEntity() {
         super();
     }
@@ -33,12 +33,15 @@ public class UserEntity extends BaseEntity<Long> {
 
     public UserEntity(Long id, String firstName, String lastName,
         String email, Date createdAt, Date updatedAt) {
-        super(id);
+        super(id, createdAt, updatedAt);
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = new EmailValueObject(email);
-        this.createdAt = (createdAt != null) ? createdAt : new Date();
-        this.updatedAt = (updatedAt != null) ? updatedAt : new Date();
+    }
+
+    @JsonSetter("email")
+    public void setEmail(String email) {
+        this.email = new EmailValueObject(email);
     }
 
     public Long getId() {
@@ -53,16 +56,18 @@ public class UserEntity extends BaseEntity<Long> {
         return lastName;
     }
 
+    @JsonIgnore
     public EmailValueObject getEmail() {
         return email;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
-    }
+    @JsonGetter("email")
+    public String getEmailValue() {
+        if (email != null) {
+            return email.getEmail();
+        }
 
-    public Date getUpdatedAt() {
-        return updatedAt;
+        return null;
     }
 
 }

@@ -3,6 +3,7 @@ package com.khakiout.study.ddddemo.interfaces.http.controller.user;
 import com.khakiout.study.ddddemo.app.user.UserApplication;
 import com.khakiout.study.ddddemo.domain.entity.UserEntity;
 import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
+import com.khakiout.study.ddddemo.domain.validation.response.ValidationReport;
 import com.khakiout.study.ddddemo.infrastructure.models.User;
 import com.khakiout.study.ddddemo.interfaces.http.controller.BaseController;
 import org.slf4j.Logger;
@@ -28,14 +29,14 @@ public class UserController implements BaseController<UserEntity> {
     }
 
     @Override
-    public Mono<ServerResponse> list(ServerRequest request) {
+    public Mono<ServerResponse> index(ServerRequest request) {
         return ServerResponse.ok()
             .contentType(MediaType.APPLICATION_JSON)
             .body(userApplication.getAll(), UserEntity.class);
     }
 
     @Override
-    public Mono<ServerResponse> get(ServerRequest request) {
+    public Mono<ServerResponse> show(ServerRequest request) {
         String id = request.pathVariable("id");
         Mono<UserEntity> userEntityMono = userApplication.findById(id);
 
@@ -46,14 +47,33 @@ public class UserController implements BaseController<UserEntity> {
 
     @Override
     public Mono<ServerResponse> create(ServerRequest request) {
+
         return request.bodyToMono(UserEntity.class)
-            .doOnSuccess(userEntity -> {
-                this.userApplication.create(userEntity)
-                    .flatMap(userEntity1 -> Mono.just(userEntity));
-            }).flatMap(userEntity -> {
-                return ServerResponse.ok()
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(Mono.just(userEntity), UserEntity.class);
+            .map(userEntity -> {
+                logger.info("Got user entity for creation.");
+                return this.userApplication.create(userEntity);
+            })
+            .flatMap(createdUser -> {
+                logger.info("Done processing user creation.");
+                return createdUser
+                    .flatMap(userEntity -> {
+                        logger.info("OKK");
+                        return ServerResponse.ok()
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .body(createdUser, UserEntity.class);
+                    })
+                    .onErrorResume(EntityValidationException.class, eve -> {
+                        logger.error(eve.getMessage());
+                        return ServerResponse.badRequest()
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .body(Mono.just(eve.getErrorMessages()), ValidationReport.class);
+                    })
+                    .onErrorResume(error -> {
+                        logger.error(error.getMessage());
+                        return ServerResponse
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .contentType(MediaType.APPLICATION_JSON).build();
+                    });
             });
     }
 
@@ -61,7 +81,6 @@ public class UserController implements BaseController<UserEntity> {
     public Mono<ServerResponse> update(ServerRequest request) {
         String id = request.pathVariable("id");
         Mono<UserEntity> userEntityMono = request.bodyToMono(UserEntity.class);
-
 
 //        return userEntityMono.subscribe(
 //            /**

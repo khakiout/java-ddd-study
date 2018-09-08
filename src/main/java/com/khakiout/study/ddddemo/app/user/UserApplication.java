@@ -37,10 +37,12 @@ public class UserApplication implements BaseApplication<UserEntity> {
 
     @Override
     public Mono<UserEntity> create(UserEntity userEntity) {
+        logger.info("Creating user.");
         try {
             userEntity.validate();
             return userRepository.create(userEntity);
         } catch (EntityValidationException eve) {
+            logger.error(eve.getMessage());
             return Mono.error(eve);
         }
     }

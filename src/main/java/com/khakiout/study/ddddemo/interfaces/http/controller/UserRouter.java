@@ -21,12 +21,15 @@ public class UserRouter {
     @Bean
     public RouterFunction<ServerResponse> route(UserController handler) {
 
-        return RouterFunctions.route(GET("/users/{id}").and(accept(APPLICATION_JSON)), handler::get)
-            .andRoute(GET("/users").and(accept(APPLICATION_JSON)), handler::list)
-            .andRoute(POST("/users").and(accept(APPLICATION_JSON)).and(contentType(APPLICATION_JSON)), handler::create)
-            .andRoute(PUT("/users/{id}").and(accept(APPLICATION_JSON)).and(contentType(APPLICATION_JSON)), handler::update)
+        return RouterFunctions.route(GET("/users/{id}").and(accept(APPLICATION_JSON)), handler::show)
+            .andRoute(GET("/users").and(accept(APPLICATION_JSON)), handler::index)
+            .andRoute(
+                POST("/users").and(accept(APPLICATION_JSON)).and(contentType(APPLICATION_JSON)),
+                handler::create)
+            .andRoute(
+                PUT("/users/{id}").and(accept(APPLICATION_JSON)).and(contentType(APPLICATION_JSON)),
+                handler::update)
             .andRoute(DELETE("/users/{id}"), handler::delete);
-
 
     }
 

@@ -10,19 +10,19 @@ import reactor.core.publisher.Mono;
 public interface BaseController<T> {
 
     /**
+     * Get the list of the entities.
+     *
+     * @return the http response with the list of entities.
+     */
+    Mono<ServerResponse> index(ServerRequest request);
+
+    /**
      * Get entity by its ID.
      *
      * @param id the id
      * @return the http response with the entity representation.
      */
-    Mono<ServerResponse> get(ServerRequest request);
-
-    /**
-     * Get the list of the entities.
-     *
-     * @return the http response with the list of entities.
-     */
-    Mono<ServerResponse> list(ServerRequest request);
+    Mono<ServerResponse> show(ServerRequest request);
 
     /**
      * Create an entity.

@@ -2,30 +2,31 @@ package com.khakiout.study.ddddemo.infrastructure.repositories.impl;
 
 import com.khakiout.study.ddddemo.domain.entity.UserEntity;
 import com.khakiout.study.ddddemo.domain.valueobject.EmailValueObject;
+import com.khakiout.study.ddddemo.infrastructure.models.User;
 import com.khakiout.study.ddddemo.infrastructure.repositories.UserRepository;
 import com.khakiout.study.ddddemo.infrastructure.spring.SpringUserRepository;
-import com.khakiout.study.ddddemo.infrastructure.models.User;
-
 import java.util.ArrayList;
-import java.util.List;
 
+import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
-public class UserRepositoryImpl implements UserRepository {
+public class UserRepositoryImpl extends BaseRepositoryImpl<User> implements UserRepository {
 
     Logger logger = LoggerFactory.getLogger(UserRepositoryImpl.class);
 
     @Autowired
     final SpringUserRepository repository;
 
-    public UserRepositoryImpl(SpringUserRepository repository) {
+    public UserRepositoryImpl(SpringUserRepository repository, SpringValidatorAdapter validator) {
+        super(validator);
         this.repository = repository;
     }
 
@@ -61,6 +62,7 @@ public class UserRepositoryImpl implements UserRepository {
 
         User user = this.transform(userEntity);
 
+        this.validate(user);
         User created = repository.save(user);
         logger.info("User creation success");
 
@@ -70,17 +72,20 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Mono<UserEntity> update(String id, UserEntity userEntity) {
         logger.info("Modifying user [{}]", id);
-        User user = this.transform(userEntity);
-        if (this.findById(id) != null) {
-            repository.save(user);
-            Optional<User> modified = repository.findById(Long.valueOf(user.getId()));
-            logger.info("User modification success");
 
-            return Mono.just(transform(modified.get()));
-        } else {
-            logger.warn("Failed to update missing user");
-            return Mono.empty();
-        }
+        return this.findById(id)
+            .flatMap(userInDB -> {
+                logger.info("Found user");
+                User user = this.transform(userInDB);
+                user.setId(Long.valueOf(id));
+                this.validate(user);
+                repository.save(user);
+
+                logger.info("User modification success");
+
+                return this.findById(id);
+            });
+
     }
 
     @Override
@@ -124,4 +129,5 @@ public class UserRepositoryImpl implements UserRepository {
 
         return userEntity;
     }
+
 }

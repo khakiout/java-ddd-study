@@ -1,4 +1,4 @@
-package com.khakiout.study.ddddemo.interfaces.http.controller;
+package com.khakiout.study.ddddemo.interfaces.http.handler;
 
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;

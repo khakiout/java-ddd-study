@@ -1,10 +1,10 @@
-package com.khakiout.study.ddddemo.interfaces.http.controller.user;
+package com.khakiout.study.ddddemo.interfaces.http.handler.user;
 
 import com.khakiout.study.ddddemo.app.user.UserApplication;
 import com.khakiout.study.ddddemo.domain.entity.UserEntity;
 import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
 import com.khakiout.study.ddddemo.domain.validation.response.ValidationReport;
-import com.khakiout.study.ddddemo.interfaces.http.controller.BaseHandler;
+import com.khakiout.study.ddddemo.interfaces.http.handler.BaseHandler;
 import java.net.URI;
 import javax.persistence.EntityNotFoundException;
 import org.slf4j.Logger;

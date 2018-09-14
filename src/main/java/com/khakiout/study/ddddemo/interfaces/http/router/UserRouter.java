@@ -8,7 +8,7 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 import static org.springframework.web.reactive.function.server.RequestPredicates.contentType;
 
-import com.khakiout.study.ddddemo.interfaces.http.controller.user.UserHandler;
+import com.khakiout.study.ddddemo.interfaces.http.handler.user.UserHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;

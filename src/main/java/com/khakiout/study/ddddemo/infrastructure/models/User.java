@@ -22,7 +22,7 @@ public class User extends BaseModel {
     private String lastName;
 
     @NotNull
-    @Email
+    @Email(regexp = ".+@.+\\..+")
     private String email;
 
     @Column(nullable = false, updatable = false)

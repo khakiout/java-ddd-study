@@ -1,8 +1,6 @@
 package com.khakiout.study.ddddemo.infrastructure.repositories;
 
 import com.khakiout.study.ddddemo.domain.entity.UserEntity;
-import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +25,11 @@ public class UserRepositoryTests {
         createUser("Larry Guevarra", null);
     }
 
-    @Ignore
     @Test(expected = DataIntegrityViolationException.class)
     public void testUserCreationWithEmptyEmailMustError() {
         createUser("Larry Guevarra", "");
     }
 
-    @Ignore
     @Test(expected = DataIntegrityViolationException.class)
     public void testUserCreationWithInvalidEmailMustError() {
         createUser("Larry Guevarra", "dasdasdasda");

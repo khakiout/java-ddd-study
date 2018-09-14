@@ -75,15 +75,16 @@ public class UserRepositoryImpl extends BaseRepositoryImpl<User> implements User
 
         return this.findById(id)
             .flatMap(userInDB -> {
-                logger.info("Found user");
-                User user = this.transform(userInDB);
+                logger.info("Found user {}", userInDB.getId());
+                User user = this.transform(userEntity);
                 user.setId(Long.valueOf(id));
-                this.validate(user);
-                repository.save(user);
+                user.setCreatedAt(userInDB.getCreatedAt());
 
+                this.validate(user);
+                User updated = repository.save(user);
                 logger.info("User modification success");
 
-                return this.findById(id);
+                return Mono.just(transform(updated));
             });
 
     }

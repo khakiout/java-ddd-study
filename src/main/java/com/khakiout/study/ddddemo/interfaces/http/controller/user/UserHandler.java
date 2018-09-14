@@ -10,7 +10,6 @@ import javax.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -99,26 +98,21 @@ public class UserHandler implements BaseHandler {
                 logger.info("Got user entity for modification.");
                 return this.userApplication.update(id, userEntity);
             })
-            .flatMap(createdUser -> {
-                logger.info("Done processing user creation.");
-                return createdUser
+            .flatMap(updatedUser -> {
+                logger.info("Done processing user modification.");
+                return updatedUser
                     .flatMap(userEntity -> {
                         logger.info("Updated user!");
                         return ServerResponse.ok()
                             .contentType(MediaType.APPLICATION_JSON)
-                            .body(createdUser, UserEntity.class);
+                            .body(updatedUser, UserEntity.class);
                     })
+                    .switchIfEmpty(ServerResponse.notFound().build())
                     .onErrorResume(EntityValidationException.class, eve -> {
                         logger.error(eve.getMessage());
                         return ServerResponse.badRequest()
                             .contentType(MediaType.APPLICATION_JSON)
                             .body(Mono.just(eve.getErrorMessages()), ValidationReport.class);
-                    })
-                    .onErrorResume(DataAccessResourceFailureException.class, drfe -> {
-                        logger.error("Unauthorized modification");
-                        return ServerResponse.status(HttpStatus.UNAUTHORIZED)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .body(Mono.just("Can't modify what's not yours."), String.class);
                     })
                     .onErrorResume(error -> {
                         logger.error(error.getMessage());

@@ -9,7 +9,6 @@ import javax.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -55,10 +54,6 @@ public class UserApplication implements BaseApplication<UserEntity> {
         try {
             logger.info("Updating user for with id of [{}]", id);
             userEntity.validate();
-            if (Long.valueOf(id) != userEntity.getId()) {
-                // TODO: Add invalid state
-                return Mono.error(new DataAccessResourceFailureException("Bad"));
-            }
             return userRepository.update(id, userEntity);
         } catch (EntityValidationException eve) {
             logger.error(eve.getMessage());

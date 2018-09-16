@@ -4,7 +4,6 @@ import com.baidu.unbiz.fluentvalidator.annotation.FluentValidate;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
 import com.khakiout.study.ddddemo.domain.validation.validator.EmailValidator;
 import com.khakiout.study.ddddemo.domain.validation.validator.NameValidator;
 import com.khakiout.study.ddddemo.domain.valueobject.EmailValueObject;
@@ -42,10 +41,6 @@ public class UserEntity extends BaseEntity<Long> {
     @JsonSetter("email")
     public void setEmail(String email) {
         this.email = new EmailValueObject(email);
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public String getFirstName() {

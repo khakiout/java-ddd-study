@@ -61,6 +61,7 @@ public class UserRepositoryImpl extends BaseRepositoryImpl<User> implements User
         logger.info("Creating user");
 
         User user = this.transform(userEntity);
+        user.setId(null); // ensure that this is a new entry.
 
         this.validate(user);
         User created = repository.save(user);

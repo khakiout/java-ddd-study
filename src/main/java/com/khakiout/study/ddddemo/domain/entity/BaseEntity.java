@@ -27,6 +27,10 @@ public abstract class BaseEntity<T> {
         this.updatedAt = (updatedAt != null) ? updatedAt : this.createdAt;
     }
 
+    public T getId() {
+        return id;
+    }
+
     public Date getCreatedAt() {
         return createdAt;
     }

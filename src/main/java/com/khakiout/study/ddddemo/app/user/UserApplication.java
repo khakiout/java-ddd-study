@@ -69,4 +69,9 @@ public class UserApplication implements BaseApplication<UserEntity> {
             .flatMap(userEntity -> userRepository.delete(id));
     }
 
+    @Override
+    public Class<UserEntity> getEntityClass() {
+        return UserEntity.class;
+    }
+
 }

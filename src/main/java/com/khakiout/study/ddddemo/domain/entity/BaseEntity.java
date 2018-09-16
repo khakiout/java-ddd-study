@@ -14,14 +14,14 @@ import java.util.Date;
 public abstract class BaseEntity<T> {
 
   protected T id;
-  protected Date createdAt;
-  protected Date updatedAt;
+  private Date createdAt;
+  private Date updatedAt;
 
-  protected BaseEntity() {
+  BaseEntity() {
     this.createdAt = this.updatedAt = new Date();
   }
 
-  protected BaseEntity(T id, Date createdAt, Date updatedAt) {
+  BaseEntity(T id, Date createdAt, Date updatedAt) {
     this.id = id;
     this.createdAt = (createdAt != null) ? new Date(createdAt.getTime()) : new Date();
     this.updatedAt = (updatedAt != null) ? new Date(updatedAt.getTime()) : this.createdAt;

@@ -23,6 +23,13 @@ repositories {
     mavenCentral()
 }
 
+allprojects {
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile) {
+            options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+        }
+    }
+}
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-webflux')

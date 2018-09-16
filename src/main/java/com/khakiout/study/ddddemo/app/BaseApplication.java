@@ -10,16 +10,16 @@ import reactor.core.publisher.Mono;
 
 public interface BaseApplication<T extends BaseEntity> {
 
-    Flux<T> getAll();
+  Flux<T> getAll();
 
-    Mono<T> findById(String id);
+  Mono<T> findById(String id);
 
-    Mono<T> create(T t);
+  Mono<T> create(T t);
 
-    Mono<T> update(String id, T t);
+  Mono<T> update(String id, T t);
 
-    Mono<Void> delete(String id);
+  Mono<Void> delete(String id);
 
-    Class<T> getEntityClass();
+  Class<T> getEntityClass();
 
 }

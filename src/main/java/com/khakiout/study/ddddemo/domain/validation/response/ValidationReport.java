@@ -5,22 +5,22 @@ import java.util.List;
 
 public class ValidationReport {
 
-    private final String type = "ValidationError";
-    private List<ValidationErrorItem> details;
+  private final String type = "ValidationError";
+  private List<ValidationErrorItem> details;
 
-    public ValidationReport() {
-        this.details = new ArrayList<>();
-    }
+  public ValidationReport() {
+    this.details = new ArrayList<>();
+  }
 
-    public void addError(ValidationErrorItem errorItem) {
-        this.details.add(errorItem);
-    }
+  public void addError(ValidationErrorItem errorItem) {
+    this.details.add(errorItem);
+  }
 
-    public String getType() {
-        return type;
-    }
+  public String getType() {
+    return type;
+  }
 
-    public List<ValidationErrorItem> getDetails() {
-        return details;
-    }
+  public List<ValidationErrorItem> getDetails() {
+    return details;
+  }
 }

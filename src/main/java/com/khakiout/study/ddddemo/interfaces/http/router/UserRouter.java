@@ -21,30 +21,36 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 @Configuration
 public class UserRouter {
 
-    @Bean
-    public RouterFunction<ServerResponse> route(UserHandler handler) {
+  /**
+   * Describe the routes for the User entity.
+   *
+   * @param handler the handler to process the route requests.
+   * @return the router functions.
+   */
+  @Bean
+  public RouterFunction<ServerResponse> route(UserHandler handler) {
 
-        return RouterFunctions
-            .route(
-                GET("/users")
-                    .and(accept(APPLICATION_JSON)),
-                handler::index)
-            .andRoute(
-                GET("/users/{id}")
-                    .and(accept(APPLICATION_JSON)),
-                handler::show)
-            .andRoute(
-                POST("/users")
-                    .and(accept(APPLICATION_JSON)).and(contentType(APPLICATION_JSON)),
-                handler::create)
-            .andRoute(
-                PUT("/users/{id}")
-                    .and(accept(APPLICATION_JSON)).and(contentType(APPLICATION_JSON)),
-                handler::update)
-            .andRoute(
-                DELETE("/users/{id}"),
-                handler::delete);
+    return RouterFunctions
+        .route(
+            GET("/users")
+                .and(accept(APPLICATION_JSON)),
+            handler::index)
+        .andRoute(
+            GET("/users/{id}")
+                .and(accept(APPLICATION_JSON)),
+            handler::show)
+        .andRoute(
+            POST("/users")
+                .and(accept(APPLICATION_JSON)).and(contentType(APPLICATION_JSON)),
+            handler::create)
+        .andRoute(
+            PUT("/users/{id}")
+                .and(accept(APPLICATION_JSON)).and(contentType(APPLICATION_JSON)),
+            handler::update)
+        .andRoute(
+            DELETE("/users/{id}"),
+            handler::delete);
 
-    }
+  }
 
 }

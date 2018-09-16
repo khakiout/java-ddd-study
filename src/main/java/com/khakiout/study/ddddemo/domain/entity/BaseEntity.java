@@ -13,47 +13,45 @@ import java.util.Date;
  */
 public abstract class BaseEntity<T> {
 
-    protected T id;
-    protected Date createdAt;
-    protected Date updatedAt;
+  protected T id;
+  protected Date createdAt;
+  protected Date updatedAt;
 
-    protected BaseEntity() {
-        this.createdAt = this.updatedAt = new Date();
+  protected BaseEntity() {
+    this.createdAt = this.updatedAt = new Date();
+  }
+
+  protected BaseEntity(T id, Date createdAt, Date updatedAt) {
+    this.id = id;
+    this.createdAt = (createdAt != null) ? new Date(createdAt.getTime()) : new Date();
+    this.updatedAt = (updatedAt != null) ? new Date(updatedAt.getTime()) : this.createdAt;
+  }
+
+  public T getId() {
+    return id;
+  }
+
+  public Date getCreatedAt() {
+    return new Date(createdAt.getTime());
+  }
+
+  public Date getUpdatedAt() {
+    return new Date(updatedAt.getTime());
+  }
+
+  /**
+   * Validate the entity based on the rules attached to it.
+   */
+  public void validate() throws EntityValidationException {
+    ComplexResult result = FluentValidator.checkAll()
+        .failOver()
+        .configure(new SimpleRegistry())
+        .on(this)
+        .doValidate()
+        .result(toComplex());
+
+    if (!result.isSuccess()) {
+      throw new EntityValidationException(result);
     }
-
-    protected BaseEntity(T id, Date createdAt, Date updatedAt) {
-        this.id = id;
-        this.createdAt = (createdAt != null) ? createdAt : new Date();
-        this.updatedAt = (updatedAt != null) ? updatedAt : this.createdAt;
-    }
-
-    public T getId() {
-        return id;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    /**
-     * Validate the entity based on the rules attached to it.
-     *
-     * @return the validation result.
-     */
-    public void validate() throws EntityValidationException {
-        ComplexResult result = FluentValidator.checkAll()
-            .failOver()
-            .configure(new SimpleRegistry())
-            .on(this)
-            .doValidate()
-            .result(toComplex());
-
-        if (!result.isSuccess()) {
-            throw new EntityValidationException(result);
-        }
-    }
+  }
 }

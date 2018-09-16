@@ -25,159 +25,159 @@ import org.springframework.web.reactive.function.BodyInserters;
 @Transactional
 public class UserRouterIntegrationTests {
 
-    @Autowired
-    private WebTestClient webClient;
+  @Autowired
+  private WebTestClient webClient;
 
-    @Test
-    public void testShowAllMustReturn2Users() {
-        webClient.get().uri("/users")
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
-            .expectStatus().isOk()
-            .expectBodyList(UserEntity.class)
-            .hasSize(2);
-    }
+  @Test
+  public void testShowAllMustReturn2Users() {
+    webClient.get().uri("/users")
+        .accept(MediaType.APPLICATION_JSON)
+        .exchange()
+        .expectStatus().isOk()
+        .expectBodyList(UserEntity.class)
+        .hasSize(2);
+  }
 
-    @Test
-    public void testGetFirstUserMustReturnMark() {
-        EntityExchangeResult<UserEntity> response = webClient.get().uri("/users/{id}", 1)
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
-            .expectStatus().isOk()
-            .expectBody(UserEntity.class)
-            .returnResult();
+  @Test
+  public void testGetFirstUserMustReturnMark() {
+    EntityExchangeResult<UserEntity> response = webClient.get().uri("/users/{id}", 1)
+        .accept(MediaType.APPLICATION_JSON)
+        .exchange()
+        .expectStatus().isOk()
+        .expectBody(UserEntity.class)
+        .returnResult();
 
-        UserEntity userEntity = response.getResponseBody();
-        assertEquals("Mark", userEntity.getFirstName());
-        assertEquals("msantos@gmail.com", userEntity.getEmailValue());
-    }
+    UserEntity userEntity = response.getResponseBody();
+    assertEquals("Mark", userEntity.getFirstName());
+    assertEquals("msantos@gmail.com", userEntity.getEmailValue());
+  }
 
-    @Test
-    public void testGetSecondUserMustReturnMarcelo() {
-        EntityExchangeResult<UserEntity> response = webClient.get().uri("/users/{id}", 2)
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
-            .expectStatus().isOk()
-            .expectBody(UserEntity.class)
-            .returnResult();
+  @Test
+  public void testGetSecondUserMustReturnMarcelo() {
+    EntityExchangeResult<UserEntity> response = webClient.get().uri("/users/{id}", 2)
+        .accept(MediaType.APPLICATION_JSON)
+        .exchange()
+        .expectStatus().isOk()
+        .expectBody(UserEntity.class)
+        .returnResult();
 
-        UserEntity userEntity = response.getResponseBody();
-        assertEquals("Marcelo", userEntity.getFirstName());
-        assertEquals("marcelo@gmail.com", userEntity.getEmailValue());
-    }
+    UserEntity userEntity = response.getResponseBody();
+    assertEquals("Marcelo", userEntity.getFirstName());
+    assertEquals("marcelo@gmail.com", userEntity.getEmailValue());
+  }
 
-    @Test
-    public void testGetNonExistentEntityMustReturn404() {
-        webClient.get().uri("/users/{id}", 2000)
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
-            .expectStatus().isNotFound();
-    }
+  @Test
+  public void testGetNonExistentEntityMustReturn404() {
+    webClient.get().uri("/users/{id}", 2000)
+        .accept(MediaType.APPLICATION_JSON)
+        .exchange()
+        .expectStatus().isNotFound();
+  }
 
-    @Test
-    public void testCreateInvalidEntityMustFail() {
-        UserEntity body = new UserEntity(null, null, null, null);
-        webClient.post().uri("/users")
-            .accept(MediaType.APPLICATION_JSON)
-            .body(BodyInserters.fromObject(body))
-            .exchange()
-            .expectStatus().isBadRequest();
-    }
+  @Test
+  public void testCreateInvalidEntityMustFail() {
+    UserEntity body = new UserEntity(null, null, null, null);
+    webClient.post().uri("/users")
+        .accept(MediaType.APPLICATION_JSON)
+        .body(BodyInserters.fromObject(body))
+        .exchange()
+        .expectStatus().isBadRequest();
+  }
 
-    @Test
-    public void testCreateValidEntityMustSucceed() {
-        UserEntity body = new UserEntity(null, "Mark", "Vasquez", "mv@gmail.com");
-        EntityExchangeResult<UserEntity> response = webClient.post().uri("/users")
-            .accept(MediaType.APPLICATION_JSON)
-            .body(BodyInserters.fromObject(body))
-            .exchange()
-            .expectStatus().isCreated()
-            .expectBody(UserEntity.class)
-            .returnResult();
+  @Test
+  public void testCreateValidEntityMustSucceed() {
+    UserEntity body = new UserEntity(null, "Mark", "Vasquez", "mv@gmail.com");
+    EntityExchangeResult<UserEntity> response = webClient.post().uri("/users")
+        .accept(MediaType.APPLICATION_JSON)
+        .body(BodyInserters.fromObject(body))
+        .exchange()
+        .expectStatus().isCreated()
+        .expectBody(UserEntity.class)
+        .returnResult();
 
-        UserEntity updated = response.getResponseBody();
-        assertNotNull(updated.getId());
-        assertEquals("Mark", updated.getFirstName());
-        assertEquals("mv@gmail.com", updated.getEmailValue());
-    }
+    UserEntity updated = response.getResponseBody();
+    assertNotNull(updated.getId());
+    assertEquals("Mark", updated.getFirstName());
+    assertEquals("mv@gmail.com", updated.getEmailValue());
+  }
 
-    @Test
-    public void testUpdateInvalidEntityMustFail() {
-        UserEntity body = new UserEntity(null, null, null, "rmico@gmail.com");
-        webClient.put().uri("/users/{id}", 2)
-            .accept(MediaType.APPLICATION_JSON)
-            .body(BodyInserters.fromObject(body))
-            .exchange()
-            .expectStatus().isBadRequest();
-    }
+  @Test
+  public void testUpdateInvalidEntityMustFail() {
+    UserEntity body = new UserEntity(null, null, null, "rmico@gmail.com");
+    webClient.put().uri("/users/{id}", 2)
+        .accept(MediaType.APPLICATION_JSON)
+        .body(BodyInserters.fromObject(body))
+        .exchange()
+        .expectStatus().isBadRequest();
+  }
 
-    @Test
-    public void testUpdateNonExistentEntityMustFail() {
-        UserEntity body = new UserEntity(null, "Rico", "Mico", "rmico@gmail.com");
-        webClient.put().uri("/users/{id}", 2000)
-            .accept(MediaType.APPLICATION_JSON)
-            .body(BodyInserters.fromObject(body))
-            .exchange()
-            .expectStatus().isNotFound();
-    }
+  @Test
+  public void testUpdateNonExistentEntityMustFail() {
+    UserEntity body = new UserEntity(null, "Rico", "Mico", "rmico@gmail.com");
+    webClient.put().uri("/users/{id}", 2000)
+        .accept(MediaType.APPLICATION_JSON)
+        .body(BodyInserters.fromObject(body))
+        .exchange()
+        .expectStatus().isNotFound();
+  }
 
-    @Test
-    public void testUpdateEntityWithNullIdMustSucceed() {
-        UserEntity body = new UserEntity(null, "Rico", "Mico", "rmico@gmail.com");
-        EntityExchangeResult<UserEntity> response = webClient.put().uri("/users/{id}", 2)
-            .accept(MediaType.APPLICATION_JSON)
-            .body(BodyInserters.fromObject(body))
-            .exchange()
-            .expectStatus().isOk()
-            .expectBody(UserEntity.class)
-            .returnResult();
+  @Test
+  public void testUpdateEntityWithNullIdMustSucceed() {
+    UserEntity body = new UserEntity(null, "Rico", "Mico", "rmico@gmail.com");
+    EntityExchangeResult<UserEntity> response = webClient.put().uri("/users/{id}", 2)
+        .accept(MediaType.APPLICATION_JSON)
+        .body(BodyInserters.fromObject(body))
+        .exchange()
+        .expectStatus().isOk()
+        .expectBody(UserEntity.class)
+        .returnResult();
 
-        UserEntity updated = response.getResponseBody();
-        assertEquals("Rico", updated.getFirstName());
-        assertEquals("rmico@gmail.com", updated.getEmailValue());
-    }
+    UserEntity updated = response.getResponseBody();
+    assertEquals("Rico", updated.getFirstName());
+    assertEquals("rmico@gmail.com", updated.getEmailValue());
+  }
 
-    @Test
-    public void testUpdateEntityWithDifferentIdMustUseRouteId() {
-        UserEntity body = new UserEntity(4L, "Rex", "Mico", "rmico@gmail.com");
-        EntityExchangeResult<UserEntity> response = webClient.put().uri("/users/{id}", 2)
-            .accept(MediaType.APPLICATION_JSON)
-            .body(BodyInserters.fromObject(body))
-            .exchange()
-            .expectStatus().isOk()
-            .expectBody(UserEntity.class)
-            .returnResult();
+  @Test
+  public void testUpdateEntityWithDifferentIdMustUseRouteId() {
+    UserEntity body = new UserEntity(4L, "Rex", "Mico", "rmico@gmail.com");
+    EntityExchangeResult<UserEntity> response = webClient.put().uri("/users/{id}", 2)
+        .accept(MediaType.APPLICATION_JSON)
+        .body(BodyInserters.fromObject(body))
+        .exchange()
+        .expectStatus().isOk()
+        .expectBody(UserEntity.class)
+        .returnResult();
 
-        UserEntity updated = response.getResponseBody();
-        assertEquals(2L, updated.getId(), 0);
-        assertEquals("Rex", updated.getFirstName());
-        assertEquals("rmico@gmail.com", updated.getEmailValue());
-    }
+    UserEntity updated = response.getResponseBody();
+    assertEquals(2L, updated.getId(), 0);
+    assertEquals("Rex", updated.getFirstName());
+    assertEquals("rmico@gmail.com", updated.getEmailValue());
+  }
 
-    @Test
-    public void testDeleteExistingEntityMustReturn200() {
-        UserEntity body = new UserEntity(null, "Rico", "Mico", "rmico@gmail.com");
-        EntityExchangeResult<UserEntity> response = webClient.post().uri("/users")
-            .accept(MediaType.APPLICATION_JSON)
-            .body(BodyInserters.fromObject(body))
-            .exchange()
-            .expectStatus().isCreated()
-            .expectBody(UserEntity.class)
-            .returnResult();
+  @Test
+  public void testDeleteExistingEntityMustReturn200() {
+    UserEntity body = new UserEntity(null, "Rico", "Mico", "rmico@gmail.com");
+    EntityExchangeResult<UserEntity> response = webClient.post().uri("/users")
+        .accept(MediaType.APPLICATION_JSON)
+        .body(BodyInserters.fromObject(body))
+        .exchange()
+        .expectStatus().isCreated()
+        .expectBody(UserEntity.class)
+        .returnResult();
 
-        UserEntity created = response.getResponseBody();
-        webClient.delete().uri("/users/{id}", created.getId())
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
-            .expectStatus().isOk();
-    }
+    UserEntity created = response.getResponseBody();
+    webClient.delete().uri("/users/{id}", created.getId())
+        .accept(MediaType.APPLICATION_JSON)
+        .exchange()
+        .expectStatus().isOk();
+  }
 
-    @Test
-    public void testDeleteNonExistentEntityMustReturn404() {
-        webClient.delete().uri("/users/{id}", 2000)
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
-            .expectStatus().isNotFound();
-    }
+  @Test
+  public void testDeleteNonExistentEntityMustReturn404() {
+    webClient.delete().uri("/users/{id}", 2000)
+        .accept(MediaType.APPLICATION_JSON)
+        .exchange()
+        .expectStatus().isNotFound();
+  }
 
 }

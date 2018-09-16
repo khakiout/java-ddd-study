@@ -13,43 +13,48 @@ import java.util.List;
  */
 public class EntityValidationException extends Exception {
 
-    private EntityValidationException() {
+  private EntityValidationException() {
 
+  }
+
+  private EntityValidationException(String message) {
+    super(message);
+  }
+
+  private EntityValidationException(String message, Throwable cause) {
+    super(message, cause);
+  }
+
+  private EntityValidationException(Throwable cause) {
+    super(cause);
+  }
+
+  private ComplexResult validationResult;
+
+  public EntityValidationException(ComplexResult validationResult) {
+    this.validationResult = validationResult;
+  }
+
+  @Override
+  public String getMessage() {
+    return "Entity has validation errors.";
+  }
+
+  /**
+   * Return the error messages obtain from the validation process of the entity.
+   *
+   * @return the validation report.
+   */
+  public ValidationReport getErrorMessages() {
+    List<ValidationError> errors = this.validationResult.getErrors();
+    ValidationReport validationReport = new ValidationReport();
+
+    for (ValidationError error : errors) {
+      ValidationErrorItem errorMessage = ValidationErrorItem.create(error.getErrorMsg())
+          .setPath(error.getField());
+      validationReport.addError(errorMessage);
     }
 
-    private EntityValidationException(String message) {
-        super(message);
-    }
-
-    private EntityValidationException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    private EntityValidationException(Throwable cause) {
-        super(cause);
-    }
-
-    private ComplexResult validationResult;
-
-    public EntityValidationException(ComplexResult validationResult) {
-        this.validationResult = validationResult;
-    }
-
-    @Override
-    public String getMessage() {
-        return "Entity has validation errors.";
-    }
-
-    public ValidationReport getErrorMessages() {
-        List<ValidationError> errors = this.validationResult.getErrors();
-        ValidationReport validationReport = new ValidationReport();
-
-        for (ValidationError error : errors) {
-            ValidationErrorItem errorMessage = ValidationErrorItem.create(error.getErrorMsg())
-                .setPath(error.getField());
-            validationReport.addError(errorMessage);
-        }
-
-        return validationReport;
-    }
+    return validationReport;
+  }
 }

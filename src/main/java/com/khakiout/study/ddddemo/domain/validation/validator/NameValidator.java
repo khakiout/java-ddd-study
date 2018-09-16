@@ -8,18 +8,18 @@ import org.springframework.util.StringUtils;
 
 public class NameValidator extends ValidatorHandler<String> implements Validator<String> {
 
-    @Override
-    public boolean validate(ValidatorContext context, String name) {
-        if (StringUtils.isEmpty(name)) {
-            ValidationError error = new ValidationError();
-            error.setErrorMsg("Name must have a value.");
-            error.setField("name");
-            context.addError(error);
+  @Override
+  public boolean validate(ValidatorContext context, String name) {
+    if (StringUtils.isEmpty(name)) {
+      ValidationError error = new ValidationError();
+      error.setErrorMsg("Name must have a value.");
+      error.setField("name");
+      context.addError(error);
 
-            return false;
-        }
-
-        return true;
+      return false;
     }
+
+    return true;
+  }
 
 }

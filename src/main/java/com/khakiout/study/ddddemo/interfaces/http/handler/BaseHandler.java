@@ -22,153 +22,153 @@ import reactor.core.publisher.Mono;
  */
 public abstract class BaseHandler {
 
-    private Logger logger = LoggerFactory.getLogger(BaseHandler.class);
+  private Logger logger = LoggerFactory.getLogger(BaseHandler.class);
 
-    private final BaseApplication<BaseEntity> application;
+  private final BaseApplication<BaseEntity> application;
 
-    /**
-     * Constructor for the handler. We added {code}SuppressWarnings(...){/code}
-     * to handle class-cast warnings.
-     *
-     * @param application the entity application.
-     */
-    @SuppressWarnings("unchecked")
-    protected BaseHandler(BaseApplication<? extends BaseEntity> application) {
-        this.application = (BaseApplication<BaseEntity>) application;
-    }
+  /**
+   * Constructor for the handler. We added {code}SuppressWarnings(...){/code} to handle class-cast
+   * warnings.
+   *
+   * @param application the entity application.
+   */
+  @SuppressWarnings("unchecked")
+  protected BaseHandler(BaseApplication<? extends BaseEntity> application) {
+    this.application = (BaseApplication<BaseEntity>) application;
+  }
 
-    /**
-     * Get the list of the entities.
-     *
-     * @param request the server request
-     * @return the http response with the list of Entities.
-     */
-    public Mono<ServerResponse> index(ServerRequest request) {
-        logger.info("List entities.");
-        return ServerResponse.ok()
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(application.getAll(), application.getEntityClass());
-    }
+  /**
+   * Get the list of the entities.
+   *
+   * @param request the server request
+   * @return the http response with the list of Entities.
+   */
+  public Mono<ServerResponse> index(ServerRequest request) {
+    logger.info("List entities.");
+    return ServerResponse.ok()
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(application.getAll(), application.getEntityClass());
+  }
 
-    /**
-     * Get entity by its ID.
-     *
-     * @param request the server request with the Entity ID as request param.
-     * @return the http response with the entity representation.
-     */
-    public Mono<ServerResponse> show(ServerRequest request) {
-        String id = request.pathVariable("id");
-        Mono<? extends BaseEntity> entityMono = application.findById(id);
+  /**
+   * Get entity by its ID.
+   *
+   * @param request the server request with the Entity ID as request param.
+   * @return the http response with the entity representation.
+   */
+  public Mono<ServerResponse> show(ServerRequest request) {
+    String id = request.pathVariable("id");
+    Mono<? extends BaseEntity> entityMono = application.findById(id);
 
-        return entityMono
-            .flatMap(entity -> {
-                return ServerResponse.ok()
+    return entityMono
+        .flatMap(entity -> {
+          return ServerResponse.ok()
+              .contentType(MediaType.APPLICATION_JSON)
+              .body(entityMono,
+                  ParameterizedTypeReference.forType(application.getEntityClass()));
+
+        })
+        .switchIfEmpty(ServerResponse.notFound().build())
+        .onErrorResume(error -> {
+          logger.error(error.getMessage());
+          return ServerResponse
+              .status(HttpStatus.INTERNAL_SERVER_ERROR)
+              .contentType(MediaType.APPLICATION_JSON).build();
+        });
+  }
+
+  /**
+   * Create an entity.
+   *
+   * @param request the server request with the Entity details to be created.
+   * @return the http response.
+   */
+  public Mono<ServerResponse> create(ServerRequest request) {
+    return request.bodyToMono(application.getEntityClass())
+        .map(entity -> {
+          logger.info("Got entity for creation.");
+          return this.application.create(entity);
+        })
+        .flatMap(createdEntity -> {
+          logger.info("Done processing entity creation.");
+          return createdEntity
+              .flatMap(entity -> {
+                logger.debug("Returning success response");
+                return ServerResponse
+                    .created(URI.create(request.uri().toString() + entity.getId()))
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(entityMono,
-                        ParameterizedTypeReference.forType(application.getEntityClass()));
-
-            })
-            .switchIfEmpty(ServerResponse.notFound().build())
-            .onErrorResume(error -> {
+                    .body(createdEntity, application.getEntityClass());
+              })
+              .onErrorResume(EntityValidationException.class, eve -> {
+                logger.error(eve.getMessage());
+                return ServerResponse.badRequest()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(Mono.just(eve.getErrorMessages()), ValidationReport.class);
+              })
+              .onErrorResume(error -> {
                 logger.error(error.getMessage());
                 return ServerResponse
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .contentType(MediaType.APPLICATION_JSON).build();
-            });
-    }
+              });
+        });
+  }
 
-    /**
-     * Create an entity.
-     *
-     * @param request the server request with the Entity details to be created.
-     * @return the http response.
-     */
-    public Mono<ServerResponse> create(ServerRequest request) {
-        return request.bodyToMono(application.getEntityClass())
-            .map(entity -> {
-                logger.info("Got entity for creation.");
-                return this.application.create(entity);
-            })
-            .flatMap(createdEntity -> {
-                logger.info("Done processing entity creation.");
-                return createdEntity
-                    .flatMap(entity -> {
-                        logger.debug("Returning success response");
-                        return ServerResponse
-                            .created(URI.create(request.uri().toString() + entity.getId()))
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .body(createdEntity, application.getEntityClass());
-                    })
-                    .onErrorResume(EntityValidationException.class, eve -> {
-                        logger.error(eve.getMessage());
-                        return ServerResponse.badRequest()
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .body(Mono.just(eve.getErrorMessages()), ValidationReport.class);
-                    })
-                    .onErrorResume(error -> {
-                        logger.error(error.getMessage());
-                        return ServerResponse
-                            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                            .contentType(MediaType.APPLICATION_JSON).build();
-                    });
-            });
-    }
+  /**
+   * Modify an entity.
+   *
+   * @param request the server request with the Entity details to be updated.
+   * @return the http response.
+   */
+  public Mono<ServerResponse> update(ServerRequest request) {
+    String id = request.pathVariable("id");
 
-    /**
-     * Modify an entity.
-     *
-     * @param request the server request with the Entity details to be updated.
-     * @return the http response.
-     */
-    public Mono<ServerResponse> update(ServerRequest request) {
-        String id = request.pathVariable("id");
+    return request.bodyToMono(application.getEntityClass())
+        .map(entity -> {
+          logger.info("Got entity for modification.");
+          return this.application.update(id, entity);
+        })
+        .flatMap(updatedEntity -> {
+          logger.info("Done processing entity modification.");
+          return updatedEntity
+              .flatMap(entity -> {
+                logger.info("Updated entity.");
+                return ServerResponse.ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(updatedEntity, application.getEntityClass());
+              })
+              .switchIfEmpty(ServerResponse.notFound().build())
+              .onErrorResume(EntityValidationException.class, eve -> {
+                logger.error(eve.getMessage());
+                return ServerResponse.badRequest()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(Mono.just(eve.getErrorMessages()), ValidationReport.class);
+              })
+              .onErrorResume(error -> {
+                logger.error(error.getMessage());
+                return ServerResponse
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .contentType(MediaType.APPLICATION_JSON).build();
+              });
+        });
+  }
 
-        return request.bodyToMono(application.getEntityClass())
-            .map(entity -> {
-                logger.info("Got entity for modification.");
-                return this.application.update(id, entity);
-            })
-            .flatMap(updatedEntity -> {
-                logger.info("Done processing entity modification.");
-                return updatedEntity
-                    .flatMap(entity -> {
-                        logger.info("Updated entity.");
-                        return ServerResponse.ok()
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .body(updatedEntity, application.getEntityClass());
-                    })
-                    .switchIfEmpty(ServerResponse.notFound().build())
-                    .onErrorResume(EntityValidationException.class, eve -> {
-                        logger.error(eve.getMessage());
-                        return ServerResponse.badRequest()
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .body(Mono.just(eve.getErrorMessages()), ValidationReport.class);
-                    })
-                    .onErrorResume(error -> {
-                        logger.error(error.getMessage());
-                        return ServerResponse
-                            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                            .contentType(MediaType.APPLICATION_JSON).build();
-                    });
-            });
-    }
+  /**
+   * Delete an entity.
+   *
+   * @param request the server request with Entity ID as route entry.
+   * @return the http response
+   */
+  public Mono<ServerResponse> delete(ServerRequest request) {
+    String id = request.pathVariable("id");
+    Mono<Void> deleteEntityAction = application.delete(id);
 
-    /**
-     * Delete an entity.
-     *
-     * @param request the server request with Entity ID as route entry.
-     * @return the http response
-     */
-    public Mono<ServerResponse> delete(ServerRequest request) {
-        String id = request.pathVariable("id");
-        Mono<Void> deleteEntityAction = application.delete(id);
-
-        return deleteEntityAction
-            .flatMap(action -> ServerResponse.ok().build())
-            .onErrorResume(EntityNotFoundException.class, enfe -> {
-                logger.debug("Failed to delete non-existent entity.");
-                return ServerResponse.status(HttpStatus.NOT_FOUND).build();
-            });
-    }
+    return deleteEntityAction
+        .flatMap(action -> ServerResponse.ok().build())
+        .onErrorResume(EntityNotFoundException.class, enfe -> {
+          logger.debug("Failed to delete non-existent entity.");
+          return ServerResponse.status(HttpStatus.NOT_FOUND).build();
+        });
+  }
 
 }

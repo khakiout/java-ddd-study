@@ -23,7 +23,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 @SpringBootTest
 @AutoConfigureWebTestClient
 @Transactional
-public class UserRouterTests {
+public class UserRouterIntegrationTests {
 
     @Autowired
     private WebTestClient webClient;

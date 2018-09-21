@@ -16,9 +16,6 @@ import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 
-/**
- * Integration test.
- */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureWebTestClient

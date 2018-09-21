@@ -30,4 +30,12 @@ public class ValidationErrorItem {
     public String getMessage() {
         return message;
     }
+
+    @Override
+    public String toString() {
+        return "ValidationErrorItem{"
+            + "path='" + path + '\''
+            + ", message='" + message + '\''
+            + '}';
+    }
 }

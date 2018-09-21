@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -21,8 +22,18 @@ public class UserApplication implements BaseApplication<UserEntity> {
     @Autowired
     private final UserRepository userRepository;
 
-    public UserApplication(UserRepository userRepository) {
+    @Autowired
+    protected final SpringValidatorAdapter validatorAdapter;
+
+    /**
+     * Instantiate the user application via DI.
+     *
+     * @param userRepository the injected user repository.
+     * @param validatorAdapter the injected spring validator.
+     */
+    public UserApplication(UserRepository userRepository, SpringValidatorAdapter validatorAdapter) {
         logger.debug("Starting service.");
+        this.validatorAdapter = validatorAdapter;
         this.userRepository = userRepository;
     }
 

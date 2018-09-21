@@ -50,5 +50,9 @@ bin/
 /nbdist/
 /.nb-gradle/
 
+
+### VSCode ###
+.vscode/
+
 # Others
 .DS_Store

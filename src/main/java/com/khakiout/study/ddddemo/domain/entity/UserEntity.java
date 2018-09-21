@@ -1,27 +1,29 @@
 package com.khakiout.study.ddddemo.domain.entity;
 
-import com.baidu.unbiz.fluentvalidator.annotation.FluentValidate;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import com.khakiout.study.ddddemo.domain.validation.validator.EmailValidator;
-import com.khakiout.study.ddddemo.domain.validation.validator.NameValidator;
 import com.khakiout.study.ddddemo.domain.valueobject.EmailValueObject;
 
 import java.util.Date;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 
 /**
  * Domain for User.
  */
 public class UserEntity extends BaseEntity<Long> {
 
-    @FluentValidate({NameValidator.class})
+    @NotBlank(message = "First name must not be blank.")
+    @NotEmpty(message = "First name must not be empty.")
     private String firstName;
 
-    @FluentValidate({NameValidator.class})
+    @NotBlank(message = "Last name must not be blank.")
+    @NotEmpty(message = "Last name must not be empty.")
     private String lastName;
 
-    @FluentValidate({EmailValidator.class})
+    @Valid
     private EmailValueObject email;
 
     public UserEntity() {

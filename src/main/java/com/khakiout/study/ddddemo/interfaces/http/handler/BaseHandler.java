@@ -3,6 +3,7 @@ package com.khakiout.study.ddddemo.interfaces.http.handler;
 import com.khakiout.study.ddddemo.app.BaseApplication;
 import com.khakiout.study.ddddemo.domain.entity.BaseEntity;
 import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
+import com.khakiout.study.ddddemo.domain.validation.response.ValidationErrorItem;
 import com.khakiout.study.ddddemo.domain.validation.response.ValidationReport;
 import java.net.URI;
 import javax.persistence.EntityNotFoundException;
@@ -101,9 +102,13 @@ public abstract class BaseHandler {
                     })
                     .onErrorResume(EntityValidationException.class, eve -> {
                         logger.error(eve.getMessage());
+                        ValidationReport validationReport = new ValidationReport();
+                        for (ValidationErrorItem error : eve.getErrorMessages()) {
+                            validationReport.addError(error);
+                        }
                         return ServerResponse.badRequest()
                             .contentType(MediaType.APPLICATION_JSON)
-                            .body(Mono.just(eve.getErrorMessages()), ValidationReport.class);
+                            .body(Mono.just(validationReport), ValidationReport.class);
                     })
                     .onErrorResume(error -> {
                         logger.error(error.getMessage());
@@ -140,9 +145,13 @@ public abstract class BaseHandler {
                     .switchIfEmpty(ServerResponse.notFound().build())
                     .onErrorResume(EntityValidationException.class, eve -> {
                         logger.error(eve.getMessage());
+                        ValidationReport validationReport = new ValidationReport();
+                        for (ValidationErrorItem error : eve.getErrorMessages()) {
+                            validationReport.addError(error);
+                        }
                         return ServerResponse.badRequest()
                             .contentType(MediaType.APPLICATION_JSON)
-                            .body(Mono.just(eve.getErrorMessages()), ValidationReport.class);
+                            .body(Mono.just(validationReport), ValidationReport.class);
                     })
                     .onErrorResume(error -> {
                         logger.error(error.getMessage());

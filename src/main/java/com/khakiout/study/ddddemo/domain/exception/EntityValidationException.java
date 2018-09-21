@@ -1,38 +1,40 @@
 package com.khakiout.study.ddddemo.domain.exception;
 
-import com.baidu.unbiz.fluentvalidator.ComplexResult;
-import com.baidu.unbiz.fluentvalidator.ValidationError;
 import com.khakiout.study.ddddemo.domain.validation.response.ValidationErrorItem;
 
-import com.khakiout.study.ddddemo.domain.validation.response.ValidationReport;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 
 /**
  * Thrown when a validation error happens inside an entity.
  */
 public class EntityValidationException extends Exception {
 
-    private EntityValidationException() {
+    private final List<ObjectError> validationErrors;
 
+    private EntityValidationException() {
+        this.validationErrors = new ArrayList<>();
     }
 
     private EntityValidationException(String message) {
         super(message);
+        this.validationErrors = new ArrayList<>();
     }
 
     private EntityValidationException(String message, Throwable cause) {
         super(message, cause);
+        this.validationErrors = new ArrayList<>();
     }
 
     private EntityValidationException(Throwable cause) {
         super(cause);
+        this.validationErrors = new ArrayList<>();
     }
 
-    private ComplexResult validationResult;
-
-    public EntityValidationException(ComplexResult validationResult) {
-        this.validationResult = validationResult;
+    public EntityValidationException(List<ObjectError> validationErrors) {
+        this.validationErrors = validationErrors;
     }
 
     @Override
@@ -45,16 +47,16 @@ public class EntityValidationException extends Exception {
      *
      * @return the validation report.
      */
-    public ValidationReport getErrorMessages() {
-        List<ValidationError> errors = this.validationResult.getErrors();
-        ValidationReport validationReport = new ValidationReport();
-
-        for (ValidationError error : errors) {
-            ValidationErrorItem errorMessage = ValidationErrorItem.create(error.getErrorMsg())
-                .setPath(error.getField());
-            validationReport.addError(errorMessage);
+    public List<ValidationErrorItem> getErrorMessages() {
+        List<ValidationErrorItem> errorMessages = new ArrayList<>();
+        for (ObjectError error : validationErrors) {
+            FieldError fieldError = (FieldError) error;
+            ValidationErrorItem errorMessage = ValidationErrorItem
+                .create(fieldError.getDefaultMessage())
+                .setPath(fieldError.getField());
+            errorMessages.add(errorMessage);
         }
 
-        return validationReport;
+        return errorMessages;
     }
 }

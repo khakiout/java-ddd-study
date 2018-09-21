@@ -1,12 +1,13 @@
 package com.khakiout.study.ddddemo.domain.entity;
 
-import static com.baidu.unbiz.fluentvalidator.ResultCollectors.toComplex;
-
-import com.baidu.unbiz.fluentvalidator.ComplexResult;
-import com.baidu.unbiz.fluentvalidator.FluentValidator;
-import com.baidu.unbiz.fluentvalidator.registry.impl.SimpleRegistry;
 import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
 import java.util.Date;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.DataBinder;
+import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 
 /**
  * Abstract class for entity.
@@ -43,15 +44,26 @@ public abstract class BaseEntity<T> {
      * Validate the entity based on the rules attached to it.
      */
     public void validate() throws EntityValidationException {
-        ComplexResult result = FluentValidator.checkAll()
-            .failOver()
-            .configure(new SimpleRegistry())
-            .on(this)
-            .doValidate()
-            .result(toComplex());
+        DataBinder binder = new DataBinder(this);
+        binder.addValidators(this.getAdapter());
 
-        if (!result.isSuccess()) {
-            throw new EntityValidationException(result);
+        // validate the target object
+        binder.validate();
+
+        // get BindingResult that includes any validation errors
+        BindingResult results = binder.getBindingResult();
+
+        if (results.hasErrors()) {
+            throw new EntityValidationException(results.getAllErrors());
         }
     }
+
+    private SpringValidatorAdapter getAdapter() {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+        SpringValidatorAdapter validatorAdapter = new SpringValidatorAdapter(validator);
+
+        return validatorAdapter;
+    }
+
 }

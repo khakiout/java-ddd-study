@@ -8,6 +8,7 @@ import com.khakiout.study.ddddemo.domain.valueobject.EmailValueObject;
 
 import java.util.Date;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * Domain for User.
@@ -20,6 +21,7 @@ public class UserEntity extends BaseEntity<Long> {
     @NameConstraint(message = "Last name must not be empty.")
     private String lastName;
 
+    @NotNull
     @Valid
     private EmailValueObject email;
 

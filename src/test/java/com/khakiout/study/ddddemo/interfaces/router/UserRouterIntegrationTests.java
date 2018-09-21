@@ -82,6 +82,26 @@ public class UserRouterIntegrationTests {
     }
 
     @Test
+    public void testCreateInvalidEmailOnEntityMustFail() {
+        UserEntity body = new UserEntity(null, "User", "One", null);
+        webClient.post().uri("/users")
+            .accept(MediaType.APPLICATION_JSON)
+            .body(BodyInserters.fromObject(body))
+            .exchange()
+            .expectStatus().isBadRequest();
+    }
+
+    @Test
+    public void testCreateEmptyDataMustFail() {
+        webClient.post().uri("/users")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(null)
+            .exchange()
+            .expectStatus().isBadRequest();
+    }
+
+    @Test
     public void testCreateValidEntityMustSucceed() {
         UserEntity body = new UserEntity(null, "Mark", "Vasquez", "mv@gmail.com");
         EntityExchangeResult<UserEntity> response = webClient.post().uri("/users")
@@ -104,6 +124,16 @@ public class UserRouterIntegrationTests {
         webClient.put().uri("/users/{id}", 2)
             .accept(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromObject(body))
+            .exchange()
+            .expectStatus().isBadRequest();
+    }
+
+    @Test
+    public void testUpdateEmptyDataMustFail() {
+        webClient.put().uri("/users/1")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(null)
             .exchange()
             .expectStatus().isBadRequest();
     }

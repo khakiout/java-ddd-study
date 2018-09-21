@@ -116,7 +116,12 @@ public abstract class BaseHandler {
                             .status(HttpStatus.INTERNAL_SERVER_ERROR)
                             .contentType(MediaType.APPLICATION_JSON).build();
                     });
-            });
+            })
+            .switchIfEmpty(ServerResponse
+                .status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .build()
+            );
     }
 
     /**
@@ -159,7 +164,12 @@ public abstract class BaseHandler {
                             .status(HttpStatus.INTERNAL_SERVER_ERROR)
                             .contentType(MediaType.APPLICATION_JSON).build();
                     });
-            });
+            })
+            .switchIfEmpty(ServerResponse
+                .status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .build()
+            );
     }
 
     /**

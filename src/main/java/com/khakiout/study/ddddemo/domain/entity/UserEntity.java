@@ -3,24 +3,21 @@ package com.khakiout.study.ddddemo.domain.entity;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.khakiout.study.ddddemo.domain.validation.constraint.NameConstraint;
 import com.khakiout.study.ddddemo.domain.valueobject.EmailValueObject;
 
 import java.util.Date;
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 
 /**
  * Domain for User.
  */
 public class UserEntity extends BaseEntity<Long> {
 
-    @NotBlank(message = "First name must not be blank.")
-    @NotEmpty(message = "First name must not be empty.")
+    @NameConstraint(message = "First name must not be empty.")
     private String firstName;
 
-    @NotBlank(message = "Last name must not be blank.")
-    @NotEmpty(message = "Last name must not be empty.")
+    @NameConstraint(message = "Last name must not be empty.")
     private String lastName;
 
     @Valid

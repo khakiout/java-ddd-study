@@ -1,10 +1,8 @@
 package com.khakiout.study.ddddemo.domain.entity;
 
 import static junit.framework.TestCase.assertNull;
-import static junit.framework.TestCase.assertTrue;
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
 import com.khakiout.study.ddddemo.domain.validation.response.ValidationErrorItem;
@@ -39,7 +37,7 @@ public class UserEntityTest {
         listErrors(eve.getErrorMessages());
         assertNotNull(eve);
         assertEquals("Entity has validation errors.", eve.getMessage());
-        assertFalse(eve.getErrorMessages().isEmpty());
+        assertEquals(1, eve.getErrorMessages().size());
     }
 
     @Test
@@ -55,7 +53,7 @@ public class UserEntityTest {
         assertNotNull(eve);
         listErrors(eve.getErrorMessages());
         assertEquals("Entity has validation errors.", eve.getMessage());
-        assertFalse(eve.getErrorMessages().isEmpty());
+        assertEquals(1, eve.getErrorMessages().size());
     }
 
     @Test
@@ -71,7 +69,23 @@ public class UserEntityTest {
         assertNotNull(eve);
         listErrors(eve.getErrorMessages());
         assertEquals("Entity has validation errors.", eve.getMessage());
-        assertFalse(eve.getErrorMessages().isEmpty());
+        assertEquals(1, eve.getErrorMessages().size());
+    }
+
+    @Test
+    public void testBlankLastNameOnEntityMustError() {
+        EntityValidationException eve = null;
+        try {
+            UserEntity user = new UserEntity(1L, "Lola", "     ", "lobat@gmail.com");
+            user.validate();
+        } catch (EntityValidationException exception) {
+            eve = exception;
+        }
+
+        assertNotNull(eve);
+        listErrors(eve.getErrorMessages());
+        assertEquals("Entity has validation errors.", eve.getMessage());
+        assertEquals(1, eve.getErrorMessages().size());
     }
 
     @Test
@@ -104,8 +118,7 @@ public class UserEntityTest {
         assertEquals("Entity has validation errors.", eve.getMessage());
         List<ValidationErrorItem> errors = eve.getErrorMessages();
         listErrors(errors);
-        assertFalse(errors.isEmpty());
-        assertTrue(errors.size() >= 3);
+        assertEquals(3, errors.size());
         System.out.println(eve.getErrorMessages());
     }
 

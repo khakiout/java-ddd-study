@@ -1,4 +1,4 @@
-package com.khakiout.study.ddddemo.domain.exception;
+package com.khakiout.study.ddddemo.app.exception;
 
 import com.khakiout.study.ddddemo.domain.validation.response.ValidationErrorItem;
 

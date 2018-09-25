@@ -1,6 +1,6 @@
 package com.khakiout.study.ddddemo.domain.entity;
 
-import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
+import com.khakiout.study.ddddemo.app.exception.EntityValidationException;
 import java.util.Date;
 import javax.validation.Validation;
 import javax.validation.Validator;

@@ -1,8 +1,8 @@
 package com.khakiout.study.ddddemo.interfaces.http.handler;
 
 import com.khakiout.study.ddddemo.app.BaseApplication;
+import com.khakiout.study.ddddemo.app.exception.EntityValidationException;
 import com.khakiout.study.ddddemo.domain.entity.BaseEntity;
-import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
 import com.khakiout.study.ddddemo.domain.validation.response.ValidationErrorItem;
 import com.khakiout.study.ddddemo.domain.validation.response.ValidationReport;
 import java.net.URI;

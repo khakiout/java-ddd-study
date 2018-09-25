@@ -1,8 +1,8 @@
 package com.khakiout.study.ddddemo.app.user;
 
 import com.khakiout.study.ddddemo.app.BaseApplication;
+import com.khakiout.study.ddddemo.app.exception.EntityValidationException;
 import com.khakiout.study.ddddemo.domain.entity.UserEntity;
-import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
 import com.khakiout.study.ddddemo.infrastructure.repositories.UserRepository;
 
 import javax.persistence.EntityNotFoundException;

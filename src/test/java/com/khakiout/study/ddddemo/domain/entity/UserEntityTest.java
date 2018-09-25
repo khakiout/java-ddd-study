@@ -4,7 +4,7 @@ import static junit.framework.TestCase.assertNull;
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.Assert.assertEquals;
 
-import com.khakiout.study.ddddemo.domain.exception.EntityValidationException;
+import com.khakiout.study.ddddemo.app.exception.EntityValidationException;
 import com.khakiout.study.ddddemo.domain.validation.response.ValidationErrorItem;
 import java.util.List;
 import org.junit.Test;

@@ -1,4 +1,4 @@
-package com.khakiout.study.ddddemo.domain.validation.response;
+package com.khakiout.study.ddddemo.domain.validation.error;
 
 public class ValidationErrorItem {
 

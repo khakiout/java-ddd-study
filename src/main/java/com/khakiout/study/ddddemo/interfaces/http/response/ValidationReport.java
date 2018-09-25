@@ -1,5 +1,6 @@
-package com.khakiout.study.ddddemo.domain.validation.response;
+package com.khakiout.study.ddddemo.interfaces.http.response;
 
+import com.khakiout.study.ddddemo.domain.validation.error.ValidationErrorItem;
 import java.util.ArrayList;
 import java.util.List;
 

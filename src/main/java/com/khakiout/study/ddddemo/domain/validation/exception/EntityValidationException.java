@@ -1,6 +1,6 @@
-package com.khakiout.study.ddddemo.app.exception;
+package com.khakiout.study.ddddemo.domain.validation.exception;
 
-import com.khakiout.study.ddddemo.domain.validation.response.ValidationErrorItem;
+import com.khakiout.study.ddddemo.domain.validation.error.ValidationErrorItem;
 
 import java.util.ArrayList;
 import java.util.List;

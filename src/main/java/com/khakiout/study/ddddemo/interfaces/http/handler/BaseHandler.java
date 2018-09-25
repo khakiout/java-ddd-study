@@ -1,10 +1,10 @@
 package com.khakiout.study.ddddemo.interfaces.http.handler;
 
 import com.khakiout.study.ddddemo.app.BaseApplication;
-import com.khakiout.study.ddddemo.app.exception.EntityValidationException;
 import com.khakiout.study.ddddemo.domain.entity.BaseEntity;
-import com.khakiout.study.ddddemo.domain.validation.response.ValidationErrorItem;
-import com.khakiout.study.ddddemo.domain.validation.response.ValidationReport;
+import com.khakiout.study.ddddemo.domain.validation.error.ValidationErrorItem;
+import com.khakiout.study.ddddemo.domain.validation.exception.EntityValidationException;
+import com.khakiout.study.ddddemo.interfaces.http.response.ValidationReport;
 import java.net.URI;
 import javax.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
@@ -42,7 +42,7 @@ public abstract class BaseHandler {
      * Get the list of the entities.
      *
      * @param request the server request
-     * @return the http response with the list of Entities.
+     * @return the http error with the list of Entities.
      */
     public Mono<ServerResponse> index(ServerRequest request) {
         logger.info("List entities.");
@@ -55,7 +55,7 @@ public abstract class BaseHandler {
      * Get entity by its ID.
      *
      * @param request the server request with the Entity ID as request param.
-     * @return the http response with the entity representation.
+     * @return the http error with the entity representation.
      */
     public Mono<ServerResponse> show(ServerRequest request) {
         String id = request.pathVariable("id");
@@ -82,7 +82,7 @@ public abstract class BaseHandler {
      * Create an entity.
      *
      * @param request the server request with the Entity details to be created.
-     * @return the http response.
+     * @return the http error.
      */
     public Mono<ServerResponse> create(ServerRequest request) {
         return request.bodyToMono(application.getEntityClass())
@@ -94,7 +94,7 @@ public abstract class BaseHandler {
                 logger.info("Done processing entity creation.");
                 return createdEntity
                     .flatMap(entity -> {
-                        logger.debug("Returning success response");
+                        logger.debug("Returning success error");
                         return ServerResponse
                             .created(URI.create(request.uri().toString() + entity.getId()))
                             .contentType(MediaType.APPLICATION_JSON)
@@ -128,7 +128,7 @@ public abstract class BaseHandler {
      * Modify an entity.
      *
      * @param request the server request with the Entity details to be updated.
-     * @return the http response.
+     * @return the http error.
      */
     public Mono<ServerResponse> update(ServerRequest request) {
         String id = request.pathVariable("id");
@@ -176,7 +176,7 @@ public abstract class BaseHandler {
      * Delete an entity.
      *
      * @param request the server request with Entity ID as route entry.
-     * @return the http response
+     * @return the http error
      */
     public Mono<ServerResponse> delete(ServerRequest request) {
         String id = request.pathVariable("id");

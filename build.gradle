@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '2.0.4.RELEASE'
+        springBootVersion = '2.0.5.RELEASE'
     }
     repositories {
         mavenCentral()
@@ -97,12 +97,9 @@ dependencies {
     compile('commons-httpclient:commons-httpclient:3.1')
     compile('commons-validator:commons-validator:1.4.0')
     compile('org.glassfish:javax.el:3.0.0')
-    compile('org.modelmapper:modelmapper:2.2.0')
     compile('org.liquibase:liquibase-core')
     runtime('com.h2database:h2')
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile('io.projectreactor:reactor-test')
-
-//    compileOnly('org.projectlombok:lombok')
 }

@@ -4,8 +4,9 @@ import com.khakiout.study.ddddemo.app.BaseApplication;
 import com.khakiout.study.ddddemo.domain.entity.BaseEntity;
 import com.khakiout.study.ddddemo.domain.validation.error.ValidationErrorItem;
 import com.khakiout.study.ddddemo.domain.validation.exception.EntityValidationException;
+import com.khakiout.study.ddddemo.interfaces.http.response.GenericBadRequestResponse;
 import com.khakiout.study.ddddemo.interfaces.http.response.NotFoundResponse;
-import com.khakiout.study.ddddemo.interfaces.http.response.ValidationReport;
+import com.khakiout.study.ddddemo.interfaces.http.response.ValidationErrorResponse;
 import java.net.URI;
 import javax.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
@@ -107,13 +108,13 @@ public abstract class BaseHandler {
                     })
                     .onErrorResume(EntityValidationException.class, eve -> {
                         logger.error(eve.getMessage());
-                        ValidationReport validationReport = new ValidationReport();
+                        ValidationErrorResponse validationReport = new ValidationErrorResponse();
                         for (ValidationErrorItem error : eve.getErrorMessages()) {
                             validationReport.addError(error);
                         }
                         return ServerResponse.badRequest()
                             .contentType(MediaType.APPLICATION_JSON)
-                            .body(Mono.just(validationReport), ValidationReport.class);
+                            .body(Mono.just(validationReport), ValidationErrorResponse.class);
                     })
                     .onErrorResume(error -> {
                         logger.error(error.getMessage());
@@ -125,7 +126,7 @@ public abstract class BaseHandler {
             .switchIfEmpty(ServerResponse
                 .status(HttpStatus.BAD_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON)
-                .build()
+                .body(Mono.just(new GenericBadRequestResponse()), GenericBadRequestResponse.class)
             );
     }
 
@@ -159,13 +160,13 @@ public abstract class BaseHandler {
                     )
                     .onErrorResume(EntityValidationException.class, eve -> {
                         logger.error(eve.getMessage());
-                        ValidationReport validationReport = new ValidationReport();
+                        ValidationErrorResponse validationReport = new ValidationErrorResponse();
                         for (ValidationErrorItem error : eve.getErrorMessages()) {
                             validationReport.addError(error);
                         }
                         return ServerResponse.badRequest()
                             .contentType(MediaType.APPLICATION_JSON)
-                            .body(Mono.just(validationReport), ValidationReport.class);
+                            .body(Mono.just(validationReport), ValidationErrorResponse.class);
                     })
                     .onErrorResume(error -> {
                         logger.error(error.getMessage());
@@ -177,7 +178,7 @@ public abstract class BaseHandler {
             .switchIfEmpty(ServerResponse
                 .status(HttpStatus.BAD_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON)
-                .build()
+                .body(Mono.just(new GenericBadRequestResponse()), GenericBadRequestResponse.class)
             );
     }
 

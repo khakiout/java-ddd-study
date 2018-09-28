@@ -78,7 +78,7 @@ pmd {
 
 test {
     useJUnit {
-//        exclude '**/*IntegrationTests.class'
+        exclude '**/*IntegrationTests.class'
     }
 }
 

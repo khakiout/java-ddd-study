@@ -4,6 +4,7 @@ import com.khakiout.study.ddddemo.app.BaseApplication;
 import com.khakiout.study.ddddemo.domain.entity.BaseEntity;
 import com.khakiout.study.ddddemo.domain.validation.error.ValidationErrorItem;
 import com.khakiout.study.ddddemo.domain.validation.exception.EntityValidationException;
+import com.khakiout.study.ddddemo.interfaces.http.response.NotFoundResponse;
 import com.khakiout.study.ddddemo.interfaces.http.response.ValidationReport;
 import java.net.URI;
 import javax.persistence.EntityNotFoundException;
@@ -69,7 +70,11 @@ public abstract class BaseHandler {
                         ParameterizedTypeReference.forType(application.getEntityClass()));
 
             })
-            .switchIfEmpty(ServerResponse.notFound().build())
+            .switchIfEmpty(
+                ServerResponse
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(Mono.just(new NotFoundResponse()), NotFoundResponse.class)
+            )
             .onErrorResume(error -> {
                 logger.error(error.getMessage());
                 return ServerResponse
@@ -147,7 +152,11 @@ public abstract class BaseHandler {
                             .contentType(MediaType.APPLICATION_JSON)
                             .body(updatedEntity, application.getEntityClass());
                     })
-                    .switchIfEmpty(ServerResponse.notFound().build())
+                    .switchIfEmpty(
+                        ServerResponse
+                            .status(HttpStatus.NOT_FOUND)
+                            .body(Mono.just(new NotFoundResponse()), NotFoundResponse.class)
+                    )
                     .onErrorResume(EntityValidationException.class, eve -> {
                         logger.error(eve.getMessage());
                         ValidationReport validationReport = new ValidationReport();
@@ -186,7 +195,9 @@ public abstract class BaseHandler {
             .flatMap(action -> ServerResponse.ok().build())
             .onErrorResume(EntityNotFoundException.class, enfe -> {
                 logger.debug("Failed to delete non-existent entity.");
-                return ServerResponse.status(HttpStatus.NOT_FOUND).build();
+                return ServerResponse
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(Mono.just(new NotFoundResponse()), NotFoundResponse.class);
             });
     }
 

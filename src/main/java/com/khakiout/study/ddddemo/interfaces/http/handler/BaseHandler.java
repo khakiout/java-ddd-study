@@ -71,17 +71,7 @@ public abstract class BaseHandler {
                         ParameterizedTypeReference.forType(application.getEntityClass()));
 
             })
-            .switchIfEmpty(
-                ServerResponse
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(Mono.just(new NotFoundResponse()), NotFoundResponse.class)
-            )
-            .onErrorResume(error -> {
-                logger.error(error.getMessage());
-                return ServerResponse
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .contentType(MediaType.APPLICATION_JSON).build();
-            });
+            .switchIfEmpty(returnNotFound());
     }
 
     /**
@@ -101,33 +91,15 @@ public abstract class BaseHandler {
                 return createdEntity
                     .flatMap(entity -> {
                         logger.debug("Returning success error");
+
                         return ServerResponse
                             .created(URI.create(request.uri().toString() + entity.getId()))
                             .contentType(MediaType.APPLICATION_JSON)
                             .body(createdEntity, application.getEntityClass());
                     })
-                    .onErrorResume(EntityValidationException.class, eve -> {
-                        logger.error(eve.getMessage());
-                        ValidationErrorResponse validationReport = new ValidationErrorResponse();
-                        for (ValidationErrorItem error : eve.getErrorMessages()) {
-                            validationReport.addError(error);
-                        }
-                        return ServerResponse.badRequest()
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .body(Mono.just(validationReport), ValidationErrorResponse.class);
-                    })
-                    .onErrorResume(error -> {
-                        logger.error(error.getMessage());
-                        return ServerResponse
-                            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                            .contentType(MediaType.APPLICATION_JSON).build();
-                    });
+                    .onErrorResume(EntityValidationException.class, this::returnValidationErrors);
             })
-            .switchIfEmpty(ServerResponse
-                .status(HttpStatus.BAD_REQUEST)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(new GenericBadRequestResponse()), GenericBadRequestResponse.class)
-            );
+            .switchIfEmpty(returnGenericBadRequest());
     }
 
     /**
@@ -149,37 +121,15 @@ public abstract class BaseHandler {
                 return updatedEntity
                     .flatMap(entity -> {
                         logger.info("Updated entity.");
+
                         return ServerResponse.ok()
                             .contentType(MediaType.APPLICATION_JSON)
                             .body(updatedEntity, application.getEntityClass());
                     })
-                    .switchIfEmpty(
-                        ServerResponse
-                            .status(HttpStatus.NOT_FOUND)
-                            .body(Mono.just(new NotFoundResponse()), NotFoundResponse.class)
-                    )
-                    .onErrorResume(EntityValidationException.class, eve -> {
-                        logger.error(eve.getMessage());
-                        ValidationErrorResponse validationReport = new ValidationErrorResponse();
-                        for (ValidationErrorItem error : eve.getErrorMessages()) {
-                            validationReport.addError(error);
-                        }
-                        return ServerResponse.badRequest()
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .body(Mono.just(validationReport), ValidationErrorResponse.class);
-                    })
-                    .onErrorResume(error -> {
-                        logger.error(error.getMessage());
-                        return ServerResponse
-                            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                            .contentType(MediaType.APPLICATION_JSON).build();
-                    });
+                    .switchIfEmpty(returnNotFound())
+                    .onErrorResume(EntityValidationException.class, this::returnValidationErrors);
             })
-            .switchIfEmpty(ServerResponse
-                .status(HttpStatus.BAD_REQUEST)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(new GenericBadRequestResponse()), GenericBadRequestResponse.class)
-            );
+            .switchIfEmpty(returnGenericBadRequest());
     }
 
     /**
@@ -196,10 +146,49 @@ public abstract class BaseHandler {
             .flatMap(action -> ServerResponse.ok().build())
             .onErrorResume(EntityNotFoundException.class, enfe -> {
                 logger.debug("Failed to delete non-existent entity.");
-                return ServerResponse
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(Mono.just(new NotFoundResponse()), NotFoundResponse.class);
+                return returnNotFound();
             });
+    }
+
+    /**
+     * Return the generic 404 response for missing entities.
+     *
+     * @return the 404 response.
+     */
+    private Mono<ServerResponse> returnNotFound() {
+        return ServerResponse
+            .status(HttpStatus.NOT_FOUND)
+            .body(Mono.just(new NotFoundResponse()), NotFoundResponse.class);
+    }
+
+    /**
+     * Return a generic 400 bad request response.
+     *
+     * @return the 400 response.
+     */
+    private Mono<ServerResponse> returnGenericBadRequest() {
+        return ServerResponse
+            .status(HttpStatus.BAD_REQUEST)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(Mono.just(new GenericBadRequestResponse()), GenericBadRequestResponse.class);
+    }
+
+    /**
+     * Process the thrown EntityValidationException and return a bad request error.
+     *
+     * @param eve the exception with the validation errors.
+     * @return the server response.
+     */
+    protected Mono<? extends ServerResponse> returnValidationErrors(EntityValidationException eve) {
+        logger.info(eve.getMessage());
+
+        ValidationErrorResponse validationReport = new ValidationErrorResponse();
+        for (ValidationErrorItem error : eve.getErrorMessages()) {
+            validationReport.addError(error);
+        }
+        return ServerResponse.badRequest()
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(Mono.just(validationReport), ValidationErrorResponse.class);
     }
 
 }

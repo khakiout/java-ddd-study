@@ -10,7 +10,7 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 
 import com.khakiout.study.ddddemo.interfaces.http.handler.user.UserHandler;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -18,7 +18,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 /**
  * Routers for Users.
  */
-@Configuration
+@Component
 public class UserRouter {
 
     /**

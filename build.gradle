@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '2.0.5.RELEASE'
+        springBootVersion = '2.0.6.RELEASE'
     }
     repositories {
         mavenCentral()
@@ -36,7 +36,7 @@ allprojects {
 }
 
 findbugs {
-    ignoreFailures = true
+    ignoreFailures = false
     findbugsTest.enabled = false
 }
 tasks.withType(FindBugs) {
@@ -72,7 +72,7 @@ tasks.withType(Checkstyle) {
 }
 
 pmd {
-    ignoreFailures = true
+    ignoreFailures = false
     pmdTest.enabled = false
 }
 

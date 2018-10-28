@@ -32,20 +32,18 @@ public class UserRouter {
 
         return RouterFunctions
             .route(
-                GET("/users")
-                    .and(accept(APPLICATION_JSON)),
+                GET("/users"),
                 handler::index)
             .andRoute(
-                GET("/users/{id}")
-                    .and(accept(APPLICATION_JSON)),
+                GET("/users/{id}"),
                 handler::show)
             .andRoute(
                 POST("/users")
-                    .and(accept(APPLICATION_JSON)).and(contentType(APPLICATION_JSON)),
+                    .and(contentType(APPLICATION_JSON)),
                 handler::create)
             .andRoute(
                 PUT("/users/{id}")
-                    .and(accept(APPLICATION_JSON)).and(contentType(APPLICATION_JSON)),
+                    .and(contentType(APPLICATION_JSON)),
                 handler::update)
             .andRoute(
                 DELETE("/users/{id}"),

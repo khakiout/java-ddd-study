@@ -28,7 +28,6 @@ public class UserRouterIntegrationTests {
     @Test
     public void testShowAllMustReturn2Users() {
         webClient.get().uri("/users")
-            .accept(MediaType.APPLICATION_JSON)
             .exchange()
             .expectStatus().isOk()
             .expectBodyList(UserEntity.class)
@@ -38,7 +37,6 @@ public class UserRouterIntegrationTests {
     @Test
     public void testGetFirstUserMustReturnMark() {
         EntityExchangeResult<UserEntity> response = webClient.get().uri("/users/{id}", 1)
-            .accept(MediaType.APPLICATION_JSON)
             .exchange()
             .expectStatus().isOk()
             .expectBody(UserEntity.class)
@@ -52,7 +50,6 @@ public class UserRouterIntegrationTests {
     @Test
     public void testGetSecondUserMustReturnMarcelo() {
         EntityExchangeResult<UserEntity> response = webClient.get().uri("/users/{id}", 2)
-            .accept(MediaType.APPLICATION_JSON)
             .exchange()
             .expectStatus().isOk()
             .expectBody(UserEntity.class)
@@ -75,7 +72,7 @@ public class UserRouterIntegrationTests {
     public void testCreateInvalidEntityMustFail() {
         UserEntity body = new UserEntity(null, null, null, null);
         webClient.post().uri("/users")
-            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromObject(body))
             .exchange()
             .expectStatus().isBadRequest();
@@ -85,7 +82,7 @@ public class UserRouterIntegrationTests {
     public void testCreateInvalidEmailOnEntityMustFail() {
         UserEntity body = new UserEntity(null, "User", "One", null);
         webClient.post().uri("/users")
-            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromObject(body))
             .exchange()
             .expectStatus().isBadRequest();
@@ -94,7 +91,6 @@ public class UserRouterIntegrationTests {
     @Test
     public void testCreateEmptyDataMustFail() {
         webClient.post().uri("/users")
-            .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .body(null)
             .exchange()
@@ -105,7 +101,7 @@ public class UserRouterIntegrationTests {
     public void testCreateValidEntityMustSucceed() {
         UserEntity body = new UserEntity(null, "Mark", "Vasquez", "mv@gmail.com");
         EntityExchangeResult<UserEntity> response = webClient.post().uri("/users")
-            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromObject(body))
             .exchange()
             .expectStatus().isCreated()
@@ -122,7 +118,7 @@ public class UserRouterIntegrationTests {
     public void testUpdateInvalidEntityMustFail() {
         UserEntity body = new UserEntity(null, null, null, "rmico@gmail.com");
         webClient.put().uri("/users/{id}", 2)
-            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromObject(body))
             .exchange()
             .expectStatus().isBadRequest();
@@ -131,7 +127,6 @@ public class UserRouterIntegrationTests {
     @Test
     public void testUpdateEmptyDataMustFail() {
         webClient.put().uri("/users/1")
-            .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .body(null)
             .exchange()
@@ -142,7 +137,7 @@ public class UserRouterIntegrationTests {
     public void testUpdateNonExistentEntityMustFail() {
         UserEntity body = new UserEntity(null, "Rico", "Mico", "rmico@gmail.com");
         webClient.put().uri("/users/{id}", 2000)
-            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromObject(body))
             .exchange()
             .expectStatus().isNotFound();
@@ -152,7 +147,7 @@ public class UserRouterIntegrationTests {
     public void testUpdateEntityWithNullIdMustSucceed() {
         UserEntity body = new UserEntity(null, "Rico", "Mico", "rmico@gmail.com");
         EntityExchangeResult<UserEntity> response = webClient.put().uri("/users/{id}", 2)
-            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromObject(body))
             .exchange()
             .expectStatus().isOk()
@@ -168,7 +163,7 @@ public class UserRouterIntegrationTests {
     public void testUpdateEntityWithDifferentIdMustUseRouteId() {
         UserEntity body = new UserEntity(4L, "Rex", "Mico", "rmico@gmail.com");
         EntityExchangeResult<UserEntity> response = webClient.put().uri("/users/{id}", 2)
-            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromObject(body))
             .exchange()
             .expectStatus().isOk()
@@ -185,7 +180,7 @@ public class UserRouterIntegrationTests {
     public void testDeleteExistingEntityMustReturn200() {
         UserEntity body = new UserEntity(null, "Rico", "Mico", "rmico@gmail.com");
         EntityExchangeResult<UserEntity> response = webClient.post().uri("/users")
-            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromObject(body))
             .exchange()
             .expectStatus().isCreated()
@@ -202,7 +197,6 @@ public class UserRouterIntegrationTests {
     @Test
     public void testDeleteNonExistentEntityMustReturn404() {
         webClient.delete().uri("/users/{id}", 2000)
-            .accept(MediaType.APPLICATION_JSON)
             .exchange()
             .expectStatus().isNotFound();
     }

@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '2.0.6.RELEASE'
+        springBootVersion = "2.0.6.RELEASE"
     }
     repositories {
         mavenCentral()
@@ -10,17 +10,17 @@ buildscript {
     }
 }
 
-apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
+apply plugin: "java"
+apply plugin: "eclipse"
+apply plugin: "org.springframework.boot"
+apply plugin: "io.spring.dependency-management"
 // code analysis
-apply plugin: 'checkstyle'
-apply plugin: 'pmd'
-apply plugin: 'findbugs'
+apply plugin: "checkstyle"
+apply plugin: "pmd"
+apply plugin: "findbugs"
 
-group = 'com.khakiout.study'
-version = '0.0.1-SNAPSHOT'
+group = "com.khakiout.study"
+version = "0.0.1-SNAPSHOT"
 sourceCompatibility = 1.8
 
 repositories {
@@ -55,12 +55,12 @@ checkstyle {
     toolVersion "8.12"
 }
 tasks.withType(Checkstyle) {
-    description 'Check code standard'
-    group 'verification'
+    description "Check code standard"
+    group "verification"
     configFile file("${project.rootDir}/config/modified_google_checks.xml")
-    source fileTree('src/main/java')
-    include '**/*.java'
-    exclude '**/gen/**'
+    source fileTree("src/main/java")
+    include "**/*.java"
+    exclude "**/gen/**"
 
     classpath = files()
     showViolations true
@@ -78,29 +78,30 @@ pmd {
 
 test {
     useJUnit {
-        exclude '**/*IntegrationTests.class'
+        exclude "**/*IntegrationTests.class"
     }
 }
 
 task integrationTest(type: Test) {
     useJUnit {
-        include '**/*IntegrationTests.class'
+        include "**/*IntegrationTests.class"
     }
 }
 
 dependencies {
-    compile('org.springframework.boot:spring-boot-starter-webflux')
+    compile("org.springframework.boot:spring-boot-starter-webflux")
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
     compile("org.springframework.boot:spring-boot-starter-security")
-    compile('ch.qos.logback.contrib:logback-json-classic:0.1.5')
-    compile('ch.qos.logback.contrib:logback-jackson:0.1.5')
-    compile('com.fasterxml.jackson.core:jackson-databind')
-    compile('commons-httpclient:commons-httpclient:3.1')
-    compile('commons-validator:commons-validator:1.4.0')
-    compile('org.glassfish:javax.el:3.0.0')
-    compile('org.liquibase:liquibase-core')
-    runtime('com.h2database:h2')
+    compile("ch.qos.logback.contrib:logback-json-classic:0.1.5")
+    compile("ch.qos.logback.contrib:logback-jackson:0.1.5")
+    compile("com.fasterxml.jackson.core:jackson-databind")
+    compile("commons-httpclient:commons-httpclient:3.1")
+    compile("commons-validator:commons-validator:1.4.0")
+    compile("org.glassfish:javax.el:3.0.0")
+    compile("org.liquibase:liquibase-core")
 
-    testCompile('org.springframework.boot:spring-boot-starter-test')
-    testCompile('io.projectreactor:reactor-test')
+    runtime("com.h2database:h2")
+
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+    testCompile("io.projectreactor:reactor-test")
 }

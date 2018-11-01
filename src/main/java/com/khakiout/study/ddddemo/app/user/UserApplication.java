@@ -9,6 +9,8 @@ import javax.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import reactor.core.publisher.Flux;
@@ -37,6 +39,7 @@ public class UserApplication implements BaseApplication<UserEntity> {
         this.userRepository = userRepository;
     }
 
+    @PreAuthorize("hasRole('VIEW')")
     @Override
     public Flux<UserEntity> getAll() {
         return userRepository.getAll();

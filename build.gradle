@@ -99,6 +99,7 @@ dependencies {
     compile("commons-validator:commons-validator:1.4.0")
     compile("org.glassfish:javax.el:3.0.0")
     compile("org.liquibase:liquibase-core")
+    compile("io.jsonwebtoken:jjwt:0.9.1")
 
     runtime("com.h2database:h2")
 

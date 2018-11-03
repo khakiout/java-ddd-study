@@ -1,5 +1,6 @@
 package com.khakiout.study.ddddemo.app.config.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
@@ -15,6 +16,12 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @EnableWebFluxSecurity
 @EnableReactiveMethodSecurity
 public class SecurityConfig {
+    
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private SecurityContextRepository securityContextRepository;
 
     /**
      * Configures the spring security filter behavior. e.g. turn off CSRF, turn off form login, etc.
@@ -29,6 +36,8 @@ public class SecurityConfig {
             .csrf().disable()
             .formLogin().disable()
             .httpBasic().disable()
+            .authenticationManager(authenticationManager)
+            .securityContextRepository(securityContextRepository)
             .authorizeExchange()
             .pathMatchers(HttpMethod.OPTIONS).permitAll()
             .pathMatchers("/**").permitAll()

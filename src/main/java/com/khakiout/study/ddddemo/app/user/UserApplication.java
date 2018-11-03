@@ -39,8 +39,8 @@ public class UserApplication implements BaseApplication<UserEntity> {
         this.userRepository = userRepository;
     }
 
-    @PreAuthorize("hasRole('VIEW')")
     @Override
+    @PreAuthorize("hasAuthority('VIEW_USERS')")
     public Flux<UserEntity> getAll() {
         return userRepository.getAll();
     }

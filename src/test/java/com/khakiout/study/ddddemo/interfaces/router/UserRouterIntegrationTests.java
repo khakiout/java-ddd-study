@@ -2,15 +2,28 @@ package com.khakiout.study.ddddemo.interfaces.router;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import com.khakiout.study.ddddemo.app.config.security.AuthenticationManager;
+import com.khakiout.study.ddddemo.app.config.security.JwtService;
+import com.khakiout.study.ddddemo.domain.entity.Permission;
 import com.khakiout.study.ddddemo.domain.entity.UserEntity;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import javax.transaction.Transactional;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -22,12 +35,30 @@ import org.springframework.web.reactive.function.BodyInserters;
 @Transactional
 public class UserRouterIntegrationTests {
 
+    Logger logger = LoggerFactory.getLogger(UserRouterIntegrationTests.class);
+
     @Autowired
     private WebTestClient webClient;
 
+    @Autowired
+    private JwtService jwtService;
+
     @Test
     public void testShowAllMustReturn2Users() {
+        UserDetails user = mock(UserDetails.class);
+        when(user.getUsername()).thenReturn("testuser");
+        Set<Permission> authorities = new HashSet<>(Arrays.asList(Permission.values()));
+        when(user.getAuthorities()).thenReturn((Set) authorities);
+        when(user.isAccountNonExpired()).thenReturn(true);
+        when(user.isAccountNonLocked()).thenReturn(true);
+        when(user.isCredentialsNonExpired()).thenReturn(true);
+        when(user.isEnabled()).thenReturn(true);
+
+        String token = jwtService.generateToken(user);
+
+        logger.info("Token: {}", token);
         webClient.get().uri("/users")
+            .header(HttpHeaders.AUTHORIZATION, "bearer " + token)
             .exchange()
             .expectStatus().isOk()
             .expectBodyList(UserEntity.class)

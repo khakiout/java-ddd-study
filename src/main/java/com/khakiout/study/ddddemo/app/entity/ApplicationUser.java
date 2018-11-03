@@ -14,11 +14,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class ApplicationUser implements UserDetails {
 
     private final String usename;
-    private final String password;
 
-    public ApplicationUser(String username, String password) {
+    public ApplicationUser(String username) {
         this.usename = username;
-        this.password = password;
     }
 
     @Override
@@ -30,7 +28,7 @@ public class ApplicationUser implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password;
+        return null;
     }
 
     @Override

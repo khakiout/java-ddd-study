@@ -37,7 +37,7 @@ public class UserRouterIntegrationTests {
 
     @Test
     public void testShowAllMustReturn2Users() {
-        ApplicationUser user = new ApplicationUser("testuser", "");
+        ApplicationUser user = new ApplicationUser("testuser");
         String token = jwtService.generateToken(user);
 
         logger.info("Token: {}", token);

@@ -1,6 +1,5 @@
 package com.khakiout.study.ddddemo.app.config.security;
 
-import com.khakiout.study.ddddemo.domain.entity.Permission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,10 +44,6 @@ public class SecurityContextRepository implements ServerSecurityContextRepositor
             Authentication auth = new UsernamePasswordAuthenticationToken(authToken, authToken);
             return this.authenticationManager.authenticate(auth)
                 .map((authentication) -> {
-                    logger.info("Got authentication");
-                    logger.info("Valid? {}",
-                        authentication.getAuthorities().contains(Permission.VIEW_USERS));
-                    logger.info(Permission.VIEW_USERS.toString());
                     return new SecurityContextImpl(authentication);
                 });
         } else {

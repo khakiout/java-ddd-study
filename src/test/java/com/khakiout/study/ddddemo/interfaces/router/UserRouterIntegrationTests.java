@@ -5,12 +5,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.khakiout.study.ddddemo.app.config.security.AuthenticationManager;
 import com.khakiout.study.ddddemo.app.config.security.JwtService;
 import com.khakiout.study.ddddemo.domain.entity.Permission;
 import com.khakiout.study.ddddemo.domain.entity.UserEntity;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import javax.transaction.Transactional;
@@ -44,6 +42,7 @@ public class UserRouterIntegrationTests {
     private JwtService jwtService;
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testShowAllMustReturn2Users() {
         UserDetails user = mock(UserDetails.class);
         when(user.getUsername()).thenReturn("testuser");

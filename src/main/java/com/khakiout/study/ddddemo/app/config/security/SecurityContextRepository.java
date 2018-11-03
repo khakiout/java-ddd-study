@@ -36,8 +36,8 @@ public class SecurityContextRepository implements ServerSecurityContextRepositor
 
         String jwtTokenPrefix = "bearer ";
 
-        boolean jwtPrefixExists = authHeader != null &&
-            authHeader.startsWith(jwtTokenPrefix.toLowerCase());
+        boolean jwtPrefixExists = authHeader != null
+            && authHeader.startsWith(jwtTokenPrefix.toLowerCase());
 
         logger.info("Header exists? {}", jwtPrefixExists);
         if (jwtPrefixExists) {

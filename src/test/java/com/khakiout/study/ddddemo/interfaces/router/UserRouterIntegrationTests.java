@@ -2,15 +2,10 @@ package com.khakiout.study.ddddemo.interfaces.router;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import com.khakiout.study.ddddemo.app.config.security.JwtService;
-import com.khakiout.study.ddddemo.domain.entity.Permission;
+import com.khakiout.study.ddddemo.app.entity.ApplicationUser;
 import com.khakiout.study.ddddemo.domain.entity.UserEntity;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 import javax.transaction.Transactional;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +16,6 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -42,17 +36,8 @@ public class UserRouterIntegrationTests {
     private JwtService jwtService;
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testShowAllMustReturn2Users() {
-        UserDetails user = mock(UserDetails.class);
-        when(user.getUsername()).thenReturn("testuser");
-        Set<Permission> authorities = new HashSet<>(Arrays.asList(Permission.values()));
-        when(user.getAuthorities()).thenReturn((Set) authorities);
-        when(user.isAccountNonExpired()).thenReturn(true);
-        when(user.isAccountNonLocked()).thenReturn(true);
-        when(user.isCredentialsNonExpired()).thenReturn(true);
-        when(user.isEnabled()).thenReturn(true);
-
+        ApplicationUser user = new ApplicationUser("testuser", "");
         String token = jwtService.generateToken(user);
 
         logger.info("Token: {}", token);

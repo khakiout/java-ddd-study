@@ -47,7 +47,7 @@ public class UserApplication implements BaseApplication<UserEntity> {
 
     @Override
     public Mono<UserEntity> findById(String id) {
-        logger.info("Retrieving entity [{}]", id);
+        logger.info("Retrieving model [{}]", id);
         return userRepository.findById(id);
     }
 

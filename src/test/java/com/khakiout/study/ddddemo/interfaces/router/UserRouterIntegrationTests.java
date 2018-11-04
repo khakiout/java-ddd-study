@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import com.khakiout.study.ddddemo.app.config.security.JwtService;
-import com.khakiout.study.ddddemo.app.entity.ApplicationUser;
+import com.khakiout.study.ddddemo.app.model.ApplicationUser;
 import com.khakiout.study.ddddemo.domain.entity.UserEntity;
 import javax.transaction.Transactional;
 import org.junit.Test;

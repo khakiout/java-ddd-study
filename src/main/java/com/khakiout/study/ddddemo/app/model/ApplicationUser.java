@@ -1,4 +1,4 @@
-package com.khakiout.study.ddddemo.app.entity;
+package com.khakiout.study.ddddemo.app.model;
 
 import com.khakiout.study.ddddemo.domain.entity.Permission;
 import java.util.Arrays;

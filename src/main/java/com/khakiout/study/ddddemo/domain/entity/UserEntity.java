@@ -6,7 +6,9 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.khakiout.study.ddddemo.domain.validation.constraint.NameConstraint;
 import com.khakiout.study.ddddemo.domain.valueobject.EmailValueObject;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -25,13 +27,16 @@ public class UserEntity extends BaseEntity<Long> {
     @Valid
     private EmailValueObject email;
 
+    @Valid
+    private List<EmailValueObject> emails;
+
     public UserEntity() {
         super();
     }
 
     public UserEntity(Long id, String firstName, String lastName,
         String email) {
-        this(id, firstName, lastName, email, null, null);
+        this(id, firstName, lastName, email, null, null, null);
     }
 
     /**
@@ -44,6 +49,21 @@ public class UserEntity extends BaseEntity<Long> {
      * @param createdAt the entity's date of creation.
      * @param updatedAt the entity's date of last modification.
      */
+    public UserEntity(Long id, String firstName, String lastName,
+        String email, List<String> emails, Date createdAt, Date updatedAt) {
+        super(id, createdAt, updatedAt);
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = new EmailValueObject(email);
+        if (emails != null) {
+            this.emails = new ArrayList<>();
+            emails.forEach(value -> {
+                EmailValueObject emailValueObject = new EmailValueObject(value);
+                this.emails.add(emailValueObject);
+            });
+        }
+    }
+
     public UserEntity(Long id, String firstName, String lastName,
         String email, Date createdAt, Date updatedAt) {
         super(id, createdAt, updatedAt);
@@ -84,4 +104,19 @@ public class UserEntity extends BaseEntity<Long> {
         return null;
     }
 
+    public List<EmailValueObject> getEmails() {
+        return emails;
+    }
+
+    @JsonSetter("emails")
+    public void setEmails(
+        List<String> emails) {
+        if (emails != null) {
+            this.emails = new ArrayList<>();
+            emails.forEach(value -> {
+                EmailValueObject emailValueObject = new EmailValueObject(value);
+                this.emails.add(emailValueObject);
+            });
+        }
+    }
 }

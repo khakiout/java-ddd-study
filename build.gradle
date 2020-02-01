@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '2.0.6.RELEASE'
+        springBootVersion = '2.2.4.RELEASE'
     }
     repositories {
         mavenCentral()
@@ -17,7 +17,6 @@ apply plugin: 'io.spring.dependency-management'
 // code analysis
 apply plugin: 'checkstyle'
 apply plugin: 'pmd'
-apply plugin: 'findbugs'
 
 group = 'com.khakiout.study'
 version = '0.0.1-SNAPSHOT'
@@ -35,16 +34,6 @@ allprojects {
     }
 }
 
-findbugs {
-    ignoreFailures = false
-    findbugsTest.enabled = false
-}
-tasks.withType(FindBugs) {
-    reports {
-        xml.enabled = false
-        html.enabled = true
-    }
-}
 tasks.withType(Pmd) {
     reports {
         xml.enabled = true

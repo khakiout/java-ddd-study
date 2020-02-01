@@ -25,18 +25,19 @@ import reactor.core.publisher.Mono;
  */
 public abstract class BaseHandler {
 
-    private Logger logger = LoggerFactory.getLogger(BaseHandler.class);
+    static final Logger LOGGER = LoggerFactory.getLogger(BaseHandler.class);
 
     private final BaseApplication<BaseEntity> application;
 
     /**
-     * Constructor for the handler. We added {code}SuppressWarnings(...){/code} to handle class-cast
+     * Constructor for the handler.
+     * We added {code}SuppressWarnings(...){/code} to avoid class-cast
      * warnings.
      *
      * @param application the entity application.
      */
     @SuppressWarnings("unchecked")
-    protected BaseHandler(BaseApplication<? extends BaseEntity> application) {
+    protected BaseHandler(final BaseApplication<? extends BaseEntity> application) {
         this.application = (BaseApplication<BaseEntity>) application;
     }
 
@@ -46,8 +47,8 @@ public abstract class BaseHandler {
      * @param request the server request
      * @return the http error with the list of Entities.
      */
-    public Mono<ServerResponse> index(ServerRequest request) {
-        logger.info("List entities.");
+    public Mono<ServerResponse> index(final ServerRequest request) {
+        LOGGER.info("List entities.");
         return ServerResponse.ok()
             .contentType(MediaType.APPLICATION_JSON)
             .body(application.getAll(), application.getEntityClass());
@@ -59,18 +60,15 @@ public abstract class BaseHandler {
      * @param request the server request with the Entity ID as request param.
      * @return the http error with the entity representation.
      */
-    public Mono<ServerResponse> show(ServerRequest request) {
+    public Mono<ServerResponse> show(final ServerRequest request) {
         String id = request.pathVariable("id");
         Mono<? extends BaseEntity> entityMono = application.findById(id);
 
         return entityMono
-            .flatMap(entity -> {
-                return ServerResponse.ok()
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(entityMono,
-                        ParameterizedTypeReference.forType(application.getEntityClass()));
-
-            })
+            .flatMap(entity -> ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(entityMono,
+                    ParameterizedTypeReference.forType(application.getEntityClass())))
             .switchIfEmpty(returnNotFound());
     }
 
@@ -80,17 +78,17 @@ public abstract class BaseHandler {
      * @param request the server request with the Entity details to be created.
      * @return the http error.
      */
-    public Mono<ServerResponse> create(ServerRequest request) {
+    public Mono<ServerResponse> create(final ServerRequest request) {
         return request.bodyToMono(application.getEntityClass())
             .map(entity -> {
-                logger.info("Got entity for creation.");
+                LOGGER.info("Got entity for creation.");
                 return this.application.create(entity);
             })
             .flatMap(createdEntity -> {
-                logger.info("Done processing entity creation.");
+                LOGGER.info("Done processing entity creation.");
                 return createdEntity
                     .flatMap(entity -> {
-                        logger.debug("Returning success error");
+                        LOGGER.debug("Returning success error");
 
                         return ServerResponse
                             .created(URI.create(request.uri().toString() + entity.getId()))
@@ -108,19 +106,19 @@ public abstract class BaseHandler {
      * @param request the server request with the Entity details to be updated.
      * @return the http error.
      */
-    public Mono<ServerResponse> update(ServerRequest request) {
+    public Mono<ServerResponse> update(final ServerRequest request) {
         String id = request.pathVariable("id");
 
         return request.bodyToMono(application.getEntityClass())
             .map(entity -> {
-                logger.info("Got entity for modification.");
+                LOGGER.info("Got entity for modification.");
                 return this.application.update(id, entity);
             })
             .flatMap(updatedEntity -> {
-                logger.info("Done processing entity modification.");
+                LOGGER.info("Done processing entity modification.");
                 return updatedEntity
                     .flatMap(entity -> {
-                        logger.info("Updated entity.");
+                        LOGGER.info("Updated entity.");
 
                         return ServerResponse.ok()
                             .contentType(MediaType.APPLICATION_JSON)
@@ -145,7 +143,7 @@ public abstract class BaseHandler {
         return deleteEntityAction
             .flatMap(action -> ServerResponse.ok().build())
             .onErrorResume(EntityNotFoundException.class, enfe -> {
-                logger.debug("Failed to delete non-existent entity.");
+                LOGGER.debug("Failed to delete non-existent entity.");
                 return returnNotFound();
             });
     }
@@ -180,7 +178,7 @@ public abstract class BaseHandler {
      * @return the server response.
      */
     protected Mono<? extends ServerResponse> returnValidationErrors(EntityValidationException eve) {
-        logger.info(eve.getMessage());
+        LOGGER.info(eve.getMessage());
 
         ValidationErrorResponse validationReport = new ValidationErrorResponse();
         for (ValidationErrorItem error : eve.getErrorMessages()) {

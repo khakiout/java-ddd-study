@@ -10,15 +10,15 @@ public class ValidationErrorItem {
     }
 
     public static ValidationErrorItem create(String errorMsg) {
-        return new ValidationErrorItem().setErrorMessage(errorMsg);
+        return new ValidationErrorItem().errorMessage(errorMsg);
     }
 
-    public ValidationErrorItem setErrorMessage(String message) {
+    public ValidationErrorItem errorMessage(String message) {
         this.message = message;
         return this;
     }
 
-    public ValidationErrorItem setPath(String path) {
+    public ValidationErrorItem path(String path) {
         this.path = path;
         return this;
     }

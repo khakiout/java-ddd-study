@@ -17,7 +17,7 @@ import reactor.core.publisher.Mono;
 @Service
 public class UserApplication implements BaseApplication<UserEntity> {
 
-    Logger logger = LoggerFactory.getLogger(UserApplication.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserApplication.class);
 
     @Autowired
     private final UserRepository userRepository;
@@ -32,7 +32,7 @@ public class UserApplication implements BaseApplication<UserEntity> {
      * @param validatorAdapter the injected spring validator.
      */
     public UserApplication(UserRepository userRepository, SpringValidatorAdapter validatorAdapter) {
-        logger.debug("Starting service.");
+        LOGGER.debug("Starting service.");
         this.validatorAdapter = validatorAdapter;
         this.userRepository = userRepository;
     }
@@ -44,37 +44,45 @@ public class UserApplication implements BaseApplication<UserEntity> {
 
     @Override
     public Mono<UserEntity> findById(String id) {
-        logger.info("Retrieving entity [{}]", id);
+        LOGGER.info("Retrieving entity [{}]", id);
         return userRepository.findById(id);
     }
 
     @Override
     public Mono<UserEntity> create(UserEntity userEntity) {
+        Mono<UserEntity> response;
+
         try {
-            logger.info("Creating user.");
+            LOGGER.info("Creating user.");
             userEntity.validate();
-            return userRepository.create(userEntity);
+            response = userRepository.create(userEntity);
         } catch (EntityValidationException eve) {
-            logger.error(eve.getMessage());
-            return Mono.error(eve);
+            LOGGER.error(eve.getMessage());
+            response = Mono.error(eve);
         }
+
+        return response;
     }
 
     @Override
     public Mono<UserEntity> update(String id, UserEntity userEntity) {
+        Mono<UserEntity> response;
+
         try {
-            logger.info("Updating user for with id of [{}]", id);
+            LOGGER.info("Updating user for with id of [{}]", id);
             userEntity.validate();
-            return userRepository.update(id, userEntity);
+            response = userRepository.update(id, userEntity);
         } catch (EntityValidationException eve) {
-            logger.error(eve.getMessage());
-            return Mono.error(eve);
+            LOGGER.error(eve.getMessage());
+            response = Mono.error(eve);
         }
+
+        return response;
     }
 
     @Override
     public Mono<Void> delete(String id) {
-        logger.info("Deleting [{}]", id);
+        LOGGER.info("Deleting [{}]", id);
         return this.findById(id)
             .switchIfEmpty(Mono.error(new EntityNotFoundException()))
             .flatMap(userEntity -> userRepository.delete(id));

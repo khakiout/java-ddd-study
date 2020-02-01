@@ -9,8 +9,6 @@ import java.util.ArrayList;
 
 import java.util.List;
 import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
@@ -19,8 +17,6 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class UserRepositoryImpl extends BaseRepositoryImpl<User> implements UserRepository {
-
-    Logger logger = LoggerFactory.getLogger(UserRepositoryImpl.class);
 
     @Autowired
     final SpringUserRepository repository;
@@ -38,7 +34,7 @@ public class UserRepositoryImpl extends BaseRepositoryImpl<User> implements User
             UserEntity entity = transform(user);
             users.add(entity);
         });
-        logger.info("Found [{}] users", users.size());
+        LOGGER.info("Found [{}] users", users.size());
 
         return Flux.fromIterable(users);
     }
@@ -58,32 +54,32 @@ public class UserRepositoryImpl extends BaseRepositoryImpl<User> implements User
 
     @Override
     public Mono<UserEntity> create(UserEntity userEntity) {
-        logger.info("Creating user");
+        LOGGER.info("Creating user");
 
         User user = this.transform(userEntity);
         user.setId(null); // ensure that this is a new entry.
 
         this.validate(user);
         User created = repository.save(user);
-        logger.info("User creation success");
+        LOGGER.info("User creation success");
 
         return Mono.just(transform(created));
     }
 
     @Override
     public Mono<UserEntity> update(String id, UserEntity userEntity) {
-        logger.info("Modifying user [{}]", id);
+        LOGGER.info("Modifying user [{}]", id);
 
         return this.findById(id)
             .flatMap(userInDB -> {
-                logger.info("Found user {}", userInDB.getId());
+                LOGGER.info("Found user {}", userInDB.getId());
                 User user = this.transform(userEntity);
                 user.setId(Long.valueOf(id));
                 user.setCreatedAt(userInDB.getCreatedAt());
 
                 this.validate(user);
                 User updated = repository.save(user);
-                logger.info("User modification success");
+                LOGGER.info("User modification success");
 
                 return Mono.just(transform(updated));
             });
@@ -92,7 +88,7 @@ public class UserRepositoryImpl extends BaseRepositoryImpl<User> implements User
 
     @Override
     public Mono<Void> delete(String id) {
-        logger.info("Deleting user [{}]", id);
+        LOGGER.info("Deleting user [{}]", id);
         repository.deleteById(Long.valueOf(id));
         return Mono.empty();
     }
@@ -126,11 +122,9 @@ public class UserRepositoryImpl extends BaseRepositoryImpl<User> implements User
      * @return the user
      */
     private UserEntity transform(User user) {
-        UserEntity userEntity = new UserEntity(user.getId(), user.getFirstName(),
+        return new UserEntity(user.getId(), user.getFirstName(),
             user.getLastName(),
             user.getEmail(), user.getCreatedAt(), user.getUpdatedAt());
-
-        return userEntity;
     }
 
 }

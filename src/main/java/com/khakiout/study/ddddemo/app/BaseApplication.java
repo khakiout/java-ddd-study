@@ -1,13 +1,12 @@
 package com.khakiout.study.ddddemo.app;
 
-/**
- * Base Application
- */
-
 import com.khakiout.study.ddddemo.domain.entity.BaseEntity;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+/**
+ * Base Application.
+ */
 public interface BaseApplication<T extends BaseEntity> {
 
     Flux<T> getAll();

@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
@@ -24,8 +25,8 @@ public abstract class BaseEntity<T> {
 
     BaseEntity(T id, Date createdAt, Date updatedAt) {
         this.id = id;
-        this.createdAt = (createdAt != null) ? new Date(createdAt.getTime()) : new Date();
-        this.updatedAt = (updatedAt != null) ? new Date(updatedAt.getTime()) : this.createdAt;
+        this.createdAt = (createdAt == null) ? new Date() : new Date(createdAt.getTime());
+        this.updatedAt = (updatedAt == null) ? this.createdAt : new Date(updatedAt.getTime());
     }
 
     public T getId() {
@@ -59,10 +60,11 @@ public abstract class BaseEntity<T> {
     }
 
     private SpringValidatorAdapter getAdapter() {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-        SpringValidatorAdapter validatorAdapter = new SpringValidatorAdapter(validator);
-
+        SpringValidatorAdapter validatorAdapter;
+        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
+            Validator validator = factory.getValidator();
+            validatorAdapter = new SpringValidatorAdapter(validator);
+        }
         return validatorAdapter;
     }
 

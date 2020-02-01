@@ -5,8 +5,6 @@ package com.khakiout.study.ddddemo.interfaces.http.response;
  */
 public class GenericBadRequestResponse extends BaseResponse {
 
-    public final String details = "Bad request.";
-
     public GenericBadRequestResponse() {
         super("BadRequest");
     }

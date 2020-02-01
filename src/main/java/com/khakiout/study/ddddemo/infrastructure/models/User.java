@@ -16,10 +16,6 @@ public class User extends BaseModel {
     @Email(regexp = ".+@.+\\..+")
     private String email;
 
-    public User() {
-
-    }
-
     public String getFirstName() {
         return firstName;
     }

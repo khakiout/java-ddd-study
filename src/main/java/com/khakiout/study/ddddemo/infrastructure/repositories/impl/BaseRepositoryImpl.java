@@ -11,7 +11,7 @@ import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 
 public abstract class BaseRepositoryImpl<M extends BaseModel> {
 
-    Logger logger = LoggerFactory.getLogger(UserRepositoryImpl.class);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(BaseRepositoryImpl.class);
 
     @Autowired
     protected final SpringValidatorAdapter validatorAdapter;
@@ -26,7 +26,7 @@ public abstract class BaseRepositoryImpl<M extends BaseModel> {
         dataBinder.validate();
         BindingResult result = dataBinder.getBindingResult();
         if (result.hasErrors()) {
-            logger.warn("Has {} validation errors", result.getAllErrors().size());
+            LOGGER.warn("Has {} validation errors", result.getAllErrors().size());
             throw new DataIntegrityViolationException("Has validation errors");
         }
     }

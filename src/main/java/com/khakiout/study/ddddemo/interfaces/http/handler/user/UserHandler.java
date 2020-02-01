@@ -2,8 +2,6 @@ package com.khakiout.study.ddddemo.interfaces.http.handler.user;
 
 import com.khakiout.study.ddddemo.app.user.UserApplication;
 import com.khakiout.study.ddddemo.interfaces.http.handler.BaseHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -12,8 +10,6 @@ import reactor.core.publisher.Mono;
 
 @Component
 public class UserHandler extends BaseHandler {
-
-    Logger logger = LoggerFactory.getLogger(UserHandler.class);
 
     @Autowired
     private final UserApplication userApplication;

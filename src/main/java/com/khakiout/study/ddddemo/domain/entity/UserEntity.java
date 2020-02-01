@@ -30,10 +30,6 @@ public class UserEntity extends BaseEntity<Long> {
     @Valid
     private List<EmailValueObject> emails;
 
-    public UserEntity() {
-        super();
-    }
-
     public UserEntity(Long id, String firstName, String lastName,
         String email) {
         this(id, firstName, lastName, email, null, null, null);
@@ -46,6 +42,7 @@ public class UserEntity extends BaseEntity<Long> {
      * @param firstName the entity first name.
      * @param lastName the entity last name.
      * @param email the entity email.
+     * @param emails other emails.
      * @param createdAt the entity's date of creation.
      * @param updatedAt the entity's date of last modification.
      */
@@ -64,6 +61,16 @@ public class UserEntity extends BaseEntity<Long> {
         }
     }
 
+    /**
+     * Instantiate a UserEntity object with the id, name, email and dates pre-populated.
+     *
+     * @param id the entity id.
+     * @param firstName the entity first name.
+     * @param lastName the entity last name.
+     * @param email the entity email.
+     * @param createdAt the entity's date of creation.
+     * @param updatedAt the entity's date of last modification.
+     */
     public UserEntity(Long id, String firstName, String lastName,
         String email, Date createdAt, Date updatedAt) {
         super(id, createdAt, updatedAt);
@@ -97,17 +104,23 @@ public class UserEntity extends BaseEntity<Long> {
      */
     @JsonGetter("email")
     public String getEmailValue() {
+        String emailValue = null;
         if (email != null) {
-            return email.getEmail();
+            emailValue = email.getEmail();
         }
 
-        return null;
+        return emailValue;
     }
 
     public List<EmailValueObject> getEmails() {
         return emails;
     }
 
+    /**
+     * Set the emails of the user.
+     *
+     * @param emails the email list.
+     */
     @JsonSetter("emails")
     public void setEmails(
         List<String> emails) {

@@ -73,7 +73,7 @@ public class UserRouterIntegrationTests {
         UserEntity body = new UserEntity(null, null, null, null);
         webClient.post().uri("/users")
             .contentType(MediaType.APPLICATION_JSON)
-            .body(BodyInserters.fromObject(body))
+            .body(BodyInserters.fromValue(body))
             .exchange()
             .expectStatus().isBadRequest();
     }
@@ -83,7 +83,7 @@ public class UserRouterIntegrationTests {
         UserEntity body = new UserEntity(null, "User", "One", null);
         webClient.post().uri("/users")
             .contentType(MediaType.APPLICATION_JSON)
-            .body(BodyInserters.fromObject(body))
+            .body(BodyInserters.fromValue(body))
             .exchange()
             .expectStatus().isBadRequest();
     }
@@ -102,7 +102,7 @@ public class UserRouterIntegrationTests {
         UserEntity body = new UserEntity(null, "Mark", "Vasquez", "mv@gmail.com");
         EntityExchangeResult<UserEntity> response = webClient.post().uri("/users")
             .contentType(MediaType.APPLICATION_JSON)
-            .body(BodyInserters.fromObject(body))
+            .body(BodyInserters.fromValue(body))
             .exchange()
             .expectStatus().isCreated()
             .expectBody(UserEntity.class)
@@ -119,7 +119,7 @@ public class UserRouterIntegrationTests {
         UserEntity body = new UserEntity(null, null, null, "rmico@gmail.com");
         webClient.put().uri("/users/{id}", 2)
             .contentType(MediaType.APPLICATION_JSON)
-            .body(BodyInserters.fromObject(body))
+            .body(BodyInserters.fromValue(body))
             .exchange()
             .expectStatus().isBadRequest();
     }
@@ -138,7 +138,7 @@ public class UserRouterIntegrationTests {
         UserEntity body = new UserEntity(null, "Rico", "Mico", "rmico@gmail.com");
         webClient.put().uri("/users/{id}", 2000)
             .contentType(MediaType.APPLICATION_JSON)
-            .body(BodyInserters.fromObject(body))
+            .body(BodyInserters.fromValue(body))
             .exchange()
             .expectStatus().isNotFound();
     }
@@ -148,7 +148,7 @@ public class UserRouterIntegrationTests {
         UserEntity body = new UserEntity(null, "Rico", "Mico", "rmico@gmail.com");
         EntityExchangeResult<UserEntity> response = webClient.put().uri("/users/{id}", 2)
             .contentType(MediaType.APPLICATION_JSON)
-            .body(BodyInserters.fromObject(body))
+            .body(BodyInserters.fromValue(body))
             .exchange()
             .expectStatus().isOk()
             .expectBody(UserEntity.class)
@@ -164,7 +164,7 @@ public class UserRouterIntegrationTests {
         UserEntity body = new UserEntity(4L, "Rex", "Mico", "rmico@gmail.com");
         EntityExchangeResult<UserEntity> response = webClient.put().uri("/users/{id}", 2)
             .contentType(MediaType.APPLICATION_JSON)
-            .body(BodyInserters.fromObject(body))
+            .body(BodyInserters.fromValue(body))
             .exchange()
             .expectStatus().isOk()
             .expectBody(UserEntity.class)
@@ -181,7 +181,7 @@ public class UserRouterIntegrationTests {
         UserEntity body = new UserEntity(null, "Rico", "Mico", "rmico@gmail.com");
         EntityExchangeResult<UserEntity> response = webClient.post().uri("/users")
             .contentType(MediaType.APPLICATION_JSON)
-            .body(BodyInserters.fromObject(body))
+            .body(BodyInserters.fromValue(body))
             .exchange()
             .expectStatus().isCreated()
             .expectBody(UserEntity.class)

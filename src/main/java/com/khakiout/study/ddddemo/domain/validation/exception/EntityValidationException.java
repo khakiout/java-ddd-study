@@ -12,9 +12,12 @@ import org.springframework.validation.ObjectError;
  */
 public class EntityValidationException extends Exception {
 
+    private static final long serialVersionUID = 8820375908290307430L;
+
     private final List<ObjectError> validationErrors;
 
     private EntityValidationException() {
+        super();
         this.validationErrors = new ArrayList<>();
     }
 
@@ -34,6 +37,7 @@ public class EntityValidationException extends Exception {
     }
 
     public EntityValidationException(List<ObjectError> validationErrors) {
+        super();
         this.validationErrors = validationErrors;
     }
 
@@ -53,7 +57,7 @@ public class EntityValidationException extends Exception {
             FieldError fieldError = (FieldError) error;
             ValidationErrorItem errorMessage = ValidationErrorItem
                 .create(fieldError.getDefaultMessage())
-                .setPath(fieldError.getField());
+                .path(fieldError.getField());
             errorMessages.add(errorMessage);
         }
 

@@ -17,6 +17,7 @@ apply plugin: 'io.spring.dependency-management'
 // code analysis
 apply plugin: 'checkstyle'
 apply plugin: 'pmd'
+//apply plugin: 'findbugs'
 
 group = 'com.khakiout.study'
 version = '0.0.1-SNAPSHOT'
@@ -34,11 +35,26 @@ allprojects {
     }
 }
 
+//findbugs {
+//    ignoreFailures = false
+//    findbugsTest.enabled = false
+//}
+//tasks.withType(FindBugs) {
+//    reports {
+//        xml.enabled = false
+//        html.enabled = true
+//    }
+//}
 tasks.withType(Pmd) {
+    ruleSets = []
+    ruleSetFiles = files("${project.rootDir}/config/pmd-custom-ruleset.xml")
     reports {
         xml.enabled = true
         html.enabled = true
     }
+    ignoreFailures = false
+    pmdTest.enabled = false
+
 }
 checkstyle {
     toolVersion "8.12"
@@ -60,11 +76,6 @@ tasks.withType(Checkstyle) {
     }
 }
 
-pmd {
-    ignoreFailures = false
-    pmdTest.enabled = false
-}
-
 test {
     useJUnit {
         exclude '**/*IntegrationTests.class'
@@ -78,17 +89,17 @@ task integrationTest(type: Test) {
 }
 
 dependencies {
-    compile('org.springframework.boot:spring-boot-starter-webflux')
-    compile("org.springframework.boot:spring-boot-starter-data-jpa")
-    compile('ch.qos.logback.contrib:logback-json-classic:0.1.5')
-    compile('ch.qos.logback.contrib:logback-jackson:0.1.5')
-    compile('com.fasterxml.jackson.core:jackson-databind')
-    compile('commons-httpclient:commons-httpclient:3.1')
-    compile('commons-validator:commons-validator:1.4.0')
-    compile('org.glassfish:javax.el:3.0.0')
-    compile('org.liquibase:liquibase-core')
-    runtime('com.h2database:h2')
+    implementation('org.springframework.boot:spring-boot-starter-webflux')
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation('ch.qos.logback.contrib:logback-json-classic:0.1.5')
+    implementation('ch.qos.logback.contrib:logback-jackson:0.1.5')
+    implementation('com.fasterxml.jackson.core:jackson-databind')
+    implementation('commons-httpclient:commons-httpclient:3.1')
+    implementation('commons-validator:commons-validator:1.4.0')
+    implementation('org.glassfish:javax.el:3.0.0')
+    implementation('org.liquibase:liquibase-core')
+    runtimeOnly('com.h2database:h2')
 
-    testCompile('org.springframework.boot:spring-boot-starter-test')
-    testCompile('io.projectreactor:reactor-test')
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
+    testImplementation('io.projectreactor:reactor-test')
 }

@@ -10,6 +10,9 @@ buildscript {
     }
 }
 
+plugins {
+    id "com.github.spotbugs" version "3.0.0"
+}
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
@@ -17,7 +20,6 @@ apply plugin: 'io.spring.dependency-management'
 // code analysis
 apply plugin: 'checkstyle'
 apply plugin: 'pmd'
-//apply plugin: 'findbugs'
 
 group = 'com.khakiout.study'
 version = '0.0.1-SNAPSHOT'
@@ -35,16 +37,14 @@ allprojects {
     }
 }
 
-//findbugs {
-//    ignoreFailures = false
-//    findbugsTest.enabled = false
-//}
-//tasks.withType(FindBugs) {
-//    reports {
-//        xml.enabled = false
-//        html.enabled = true
-//    }
-//}
+tasks.withType(com.github.spotbugs.SpotBugsTask) {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+    spotbugsTest.enabled = false
+}
+
 tasks.withType(Pmd) {
     ruleSets = []
     ruleSetFiles = files("${project.rootDir}/config/pmd-custom-ruleset.xml")
@@ -54,8 +54,8 @@ tasks.withType(Pmd) {
     }
     ignoreFailures = false
     pmdTest.enabled = false
-
 }
+
 checkstyle {
     toolVersion "8.12"
 }
